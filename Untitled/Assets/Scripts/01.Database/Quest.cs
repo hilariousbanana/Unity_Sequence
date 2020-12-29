@@ -12,6 +12,7 @@ public class Quest
     public bool bHaveKey;
     public bool bBossKilled;
     public STAGE Stage;
+
     public enum STAGE
     {
         Stage1,

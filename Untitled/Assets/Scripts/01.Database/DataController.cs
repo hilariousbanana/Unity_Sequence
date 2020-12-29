@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataController : MonoBehaviour
+public class DataController : MonoSingleton<DataController>
 {
     // Start is called before the first frame update
     void Start()
