@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public WEAPON Type;
+    public string WeaponType;
     public float Range; 
     public float Accuracy;
     public float FireRate; //연사속도
@@ -28,15 +28,6 @@ public class Weapon : MonoBehaviour
     public AudioClip ShootSound;
     public AudioClip ReloadSound;
     public ParticleSystem Muzzle;
-
-    public enum WEAPON
-    {
-        Gun,
-        Sniper,
-        ShotGun,
-        Rifle,
-        Granade
-    }
 
     void MakePlaySFX()
     {

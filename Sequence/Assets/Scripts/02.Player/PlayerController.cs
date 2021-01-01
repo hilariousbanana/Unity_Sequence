@@ -39,13 +39,16 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private Rigidbody rigidBody;
     private CapsuleCollider collider;
+    private CrosshairController crosshair;
 
     // Start is called before the first frame update
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
-        applySpeed = walkSpeed;
+        crosshair = FindObjectOfType<CrosshairController>();
         collider = GetComponent<CapsuleCollider>();
+
+        applySpeed = walkSpeed;
         originPosY = cam.transform.localPosition.y;
         applyPosY = originPosY;
     }
@@ -65,11 +68,12 @@ public class PlayerController : MonoSingleton<PlayerController>
     private void IsOnGround()
     {
         bOnGround = Physics.Raycast(transform.position, Vector3.down, collider.bounds.extents.y + 0.1f);
+        crosshair.RunAnim(!bOnGround);
     }
 
     private void TryJump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && bOnGround)
+        if (Input.GetKeyDown(KeyCode.Space) && bOnGround)
         {
             Jump();
         }
@@ -84,11 +88,11 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private void TryRun()
     {
-        if(Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             Run();
         }
-        if(Input.GetKeyUp(KeyCode.LeftShift))
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             CancelRun();
         }
@@ -96,7 +100,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private void TryCrouch()
     {
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             Crouch();
         }
@@ -106,15 +110,17 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         bCrouch = !bCrouch;
 
-        if(bCrouch)
+        if (bCrouch)
         {
             applySpeed = crouchSpeed;
             applyPosY = crouchPosY;
+            crosshair.CrouchAnim(bCrouch);
         }
         else
         {
             applySpeed = walkSpeed;
             applyPosY = originPosY;
+            crosshair.CrouchAnim(bCrouch);
         }
 
         //cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, applyPosY, cam.transform.localPosition.z);
@@ -127,7 +133,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         float posY = cam.transform.localPosition.y;
         int count = 0;
 
-        while(posY != applyPosY)
+        while (posY != applyPosY)
         {
             count++;
             posY = Mathf.Lerp(posY, applyPosY, 0.01f);
@@ -139,26 +145,36 @@ public class PlayerController : MonoSingleton<PlayerController>
         cam.transform.localPosition = new Vector3(0, applyPosY, 0);
     }
 
+
+    private void MoveCheck(float dirX, float dirZ)
+    {
+        if (!bRun && !bCrouch && bOnGround)
+        {
+            if (dirX == 0 && dirZ == 0)
+            {
+                bWalk = false;
+            }
+            else
+            {
+                bWalk = true;
+            }
+            crosshair.WalkAnim(bWalk);
+            crosshair.RunAnim(bRun);
+        }
+
+    }
     private void Move()
     {
         float moveDirX = Input.GetAxisRaw("Horizontal");
         float moveDirZ = Input.GetAxisRaw("Vertical");
 
-        if(moveDirX == 0 && moveDirZ == 0)
-        {
-            bWalk = false;
-            bRun = false;
-        }
-        else
-        {
-            bWalk = true;
-            Vector3 moveH = transform.right * moveDirX;
-            Vector3 moveV = transform.forward * moveDirZ;
+        MoveCheck(moveDirX, moveDirZ);
 
-            Vector3 velocity = (moveH + moveV).normalized * applySpeed;
+        Vector3 moveH = transform.right * moveDirX;
+        Vector3 moveV = transform.forward * moveDirZ;
 
-            rigidBody.MovePosition(transform.position + velocity);
-        }
+        Vector3 velocity = (moveH + moveV).normalized * applySpeed;
+        rigidBody.MovePosition(transform.position + velocity);
     }
 
     private void Run()
@@ -167,11 +183,13 @@ public class PlayerController : MonoSingleton<PlayerController>
             Crouch();
         bRun = true;
         applySpeed = runSpeed;
+        crosshair.RunAnim(bRun);
     }
 
     private void CancelRun()
     {
         bRun = false;
+        crosshair.RunAnim(bRun);
         applySpeed = walkSpeed;
     }
 
