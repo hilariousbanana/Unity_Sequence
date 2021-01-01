@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoSingleton<PlayerController>
 {
     [SerializeField]
     private float walkSpeed;
@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float camMoveY;
 
+    private bool bWalk = false;
     private bool bRun = false;
     private bool bOnGround = true;
     private bool bCrouch = false;
@@ -143,12 +144,21 @@ public class PlayerController : MonoBehaviour
         float moveDirX = Input.GetAxisRaw("Horizontal");
         float moveDirZ = Input.GetAxisRaw("Vertical");
 
-        Vector3 moveH = transform.right * moveDirX;
-        Vector3 moveV = transform.forward * moveDirZ;
+        if(moveDirX == 0 && moveDirZ == 0)
+        {
+            bWalk = false;
+            bRun = false;
+        }
+        else
+        {
+            bWalk = true;
+            Vector3 moveH = transform.right * moveDirX;
+            Vector3 moveV = transform.forward * moveDirZ;
 
-        Vector3 velocity = (moveH + moveV).normalized * applySpeed;
+            Vector3 velocity = (moveH + moveV).normalized * applySpeed;
 
-        rigidBody.MovePosition(transform.position + velocity);
+            rigidBody.MovePosition(transform.position + velocity);
+        }
     }
 
     private void Run()
@@ -183,5 +193,15 @@ public class PlayerController : MonoBehaviour
         Vector3 playerRotY = new Vector3(0f, yRot, 0f) * lookSensitivity;
 
         rigidBody.MoveRotation(rigidBody.rotation * Quaternion.Euler(playerRotY));
+    }
+
+    public bool GetPlayerWalk()
+    {
+        return bWalk;
+    }
+
+    public bool GetPlayerRun()
+    {
+        return bRun;
     }
 }

@@ -11,6 +11,7 @@ public class Weapon : MonoBehaviour
     public float ReloadTime;
 
     public bool bPlaySFX = false;
+    public bool bWalkSound = false;
 
     public int Damage;
 
@@ -40,5 +41,10 @@ public class Weapon : MonoBehaviour
     void MakePlaySFX()
     {
         bPlaySFX = true;
+    }
+
+    void MakePlayWalkSound()
+    {
+        bWalkSound = true;
     }
 }
