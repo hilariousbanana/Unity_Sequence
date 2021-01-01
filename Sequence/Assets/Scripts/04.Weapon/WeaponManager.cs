@@ -21,6 +21,13 @@ public class WeaponManager : MonoBehaviour
     private Vector3 recoilBack;
     private Vector3 retroActionRecoilBack;
 
+    [SerializeField]
+    private Camera cam;
+    private RaycastHit hitInfo;
+
+    [SerializeField]
+    private GameObject hitEffect;
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -115,9 +122,19 @@ public class WeaponManager : MonoBehaviour
         curFireRate = curWeapon.FireRate;
         PlaySFX(curWeapon.ShootSound);
         curWeapon.Muzzle.Play();
-
+        Hit();
         StopAllCoroutines();
         StartCoroutine(RetroActionCoroutine());
+    }
+
+    private void Hit()
+    {
+        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hitInfo, curWeapon.Range))
+        {
+            Debug.DrawRay(cam.transform.position, cam.transform.forward * 10 , Color.red, 100);
+            var clone = Instantiate(hitEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal)); //hitinfo.normal = 충돌한 표면방향
+            Destroy(clone, 2f);
+        }
     }
 
     IEnumerator ReloadCoroutine()
