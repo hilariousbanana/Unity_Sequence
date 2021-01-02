@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
     public string WeaponType;
+    public int WeaponNum;
     public float Range; 
     public float Accuracy;
     public float FireRate; //연사속도
@@ -28,6 +30,7 @@ public class Weapon : MonoBehaviour
     public AudioClip ShootSound;
     public AudioClip ReloadSound;
     public ParticleSystem Muzzle;
+    public Sprite WeaponImage;
 
     void MakePlaySFX()
     {

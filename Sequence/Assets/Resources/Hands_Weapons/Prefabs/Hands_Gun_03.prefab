@@ -2243,6 +2243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponType: Hand Gun
+  WeaponNum: 0
   Range: 20
   Accuracy: 0
   FireRate: 0.2
@@ -2260,6 +2261,7 @@ MonoBehaviour:
   ShootSound: {fileID: 0}
   ReloadSound: {fileID: 0}
   Muzzle: {fileID: 6420743359288945278}
+  WeaponImage: {fileID: 21300014, guid: 71a7f8669de848e45ba57bda95f3a58e, type: 3}
 --- !u!1 &1734435904563876
 GameObject:
   m_ObjectHideFlags: 0

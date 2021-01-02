@@ -16,7 +16,7 @@ public class GunController : MonoSingleton<GunController>
     private AudioClip walkSound;
 
     [SerializeField]
-    private Vector3 originPos;
+    private Vector3[] originPos;
     private Vector3 recoilBack;
     private Vector3 retroActionRecoilBack;
 
@@ -32,8 +32,11 @@ public class GunController : MonoSingleton<GunController>
     {
         audioSource = GetComponent<AudioSource>();
         crosshair = FindObjectOfType<CrosshairController>();
-        recoilBack = new Vector3(originPos.x, originPos.y, curWeapon.RetroActionForce);
+        recoilBack = new Vector3(originPos[curWeapon.WeaponNum].x, originPos[curWeapon.WeaponNum].y, curWeapon.RetroActionForce);
         retroActionRecoilBack = new Vector3(curWeapon.FineSightOriginPos.x, curWeapon.FineSightOriginPos.y, curWeapon.RetroActionFineSightForce);
+
+        WeaponManager.curWeapon = curWeapon.GetComponent<Transform>();
+        WeaponManager.curWeaponAnim = curWeapon.Anim;
     }
     private void Update()
     {
@@ -85,6 +88,14 @@ public class GunController : MonoSingleton<GunController>
         }
     }
 
+    public void CancelReload()
+    {
+        if(bReload)
+        {
+            StopAllCoroutines();
+            bReload = false;
+        }
+    }
 
     private void TryPlaySound()
     {
@@ -139,7 +150,7 @@ public class GunController : MonoSingleton<GunController>
         {
             Debug.DrawRay(cam.transform.position, cam.transform.forward * 10 , Color.red, 100);
             var clone = Instantiate(hitEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal)); //hitinfo.normal = 충돌한 표면방향
-            Destroy(clone, 2f);
+            Destroy(clone, 1.5f);
         }
     }
 
@@ -185,7 +196,7 @@ public class GunController : MonoSingleton<GunController>
         }
     }
 
-    private void CancelFineSight()
+    public void CancelFineSight()
     {
         if (bfineSight)
             FineSight();
@@ -202,9 +213,9 @@ public class GunController : MonoSingleton<GunController>
 
     IEnumerator FineSightDeactivateCoroutine()
     {
-        while (curWeapon.transform.localPosition != originPos)
+        while (curWeapon.transform.localPosition != originPos[curWeapon.WeaponNum])
         {
-            curWeapon.transform.localPosition = Vector3.Lerp(curWeapon.transform.localPosition, originPos, 0.08f);
+            curWeapon.transform.localPosition = Vector3.Lerp(curWeapon.transform.localPosition, originPos[curWeapon.WeaponNum], 0.08f);
             yield return null;
         }
     }
@@ -213,15 +224,15 @@ public class GunController : MonoSingleton<GunController>
     {
         if(!bfineSight)
         {
-            curWeapon.transform.localPosition = originPos;
+            curWeapon.transform.localPosition = originPos[curWeapon.WeaponNum];
             while(curWeapon.transform.localPosition.z <= curWeapon.RetroActionForce - 0.02f)
             {
                 curWeapon.transform.localPosition = Vector3.Lerp(curWeapon.transform.localPosition, recoilBack, 0.2f);
                 yield return null;
             }
-            while(curWeapon.transform.localPosition != originPos)
+            while(curWeapon.transform.localPosition != originPos[curWeapon.WeaponNum])
             {
-                curWeapon.transform.localPosition = Vector3.Lerp(curWeapon.transform.localPosition, originPos, 0.05f);
+                curWeapon.transform.localPosition = Vector3.Lerp(curWeapon.transform.localPosition, originPos[curWeapon.WeaponNum], 0.05f);
                 yield return null;
             }
         }
@@ -266,5 +277,20 @@ public class GunController : MonoSingleton<GunController>
     public bool GetFineSightMode()
     {
         return bfineSight;
+    }
+
+    public void GunChange(Weapon _weapon)
+    {
+        if(WeaponManager.curWeapon != null)
+        {
+            WeaponManager.curWeapon.gameObject.SetActive(false);
+
+            curWeapon = _weapon;
+            WeaponManager.curWeapon = curWeapon.GetComponent<Transform>();
+            WeaponManager.curWeaponAnim = curWeapon.Anim;
+
+            curWeapon.transform.localPosition = originPos[curWeapon.WeaponNum];
+            curWeapon.gameObject.SetActive(true);
+        }
     }
 }
