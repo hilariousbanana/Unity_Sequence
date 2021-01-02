@@ -71,6 +71,7 @@ public class WeaponManager : MonoSingleton<WeaponManager>
     {
         bChangeWeapon = true;
         curWeaponAnim.SetTrigger("Hide");
+        audio.clip = changeSound;
         audio.Play();
 
         yield return new WaitForSeconds(changeWeaponDelay);

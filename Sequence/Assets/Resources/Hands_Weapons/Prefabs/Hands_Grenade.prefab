@@ -1367,9 +1367,9 @@ MonoBehaviour:
   bPlaySFX: 0
   bWalkSound: 0
   Damage: 0
-  MaxBulletCount: 0
-  CurBulletCount: 0
-  ReloadCount: 0
+  MaxBulletCount: 1
+  CurBulletCount: 1
+  ReloadCount: 3
   RetroActionForce: 0
   RetroActionFineSightForce: 0
   FineSightOriginPos: {x: 0, y: 0, z: 0}
