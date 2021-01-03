@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GunController : MonoSingleton<GunController>
 {
+    //현재 착용 중인 무기 관련
     [SerializeField]
     private Weapon curWeapon;    
     private float curFireRate;
@@ -11,22 +12,32 @@ public class GunController : MonoSingleton<GunController>
     private bool bReload;
     private bool bfineSight;
 
+    //사운드 이펙트
     private AudioSource audioSource;
     [SerializeField]
     private AudioClip walkSound;
 
+    //총기 반동 관련
     [SerializeField]
     private Vector3[] originPos;
     private Vector3 recoilBack;
     private Vector3 retroActionRecoilBack;
 
+    //Raycast, Hit 관련
     [SerializeField]
     private Camera cam;
-    private RaycastHit hitInfo;
-
     [SerializeField]
     private GameObject hitEffect;
+    private RaycastHit hitInfo;
+
+    //스나이퍼 정조준 시
+    [SerializeField]
+    private GameObject sniperScope;
+    [SerializeField]
+    private GameObject weaponCamera;
     private CrosshairController crosshair;
+    public float ScopeFOV;
+    private float normalFOV = 60f;
 
     private void Start()
     {
@@ -188,11 +199,19 @@ public class GunController : MonoSingleton<GunController>
         {
             StopAllCoroutines();
             StartCoroutine(FineSightActivateCoroutine());
+            if(curWeapon.WeaponType == "Sniper")
+            {
+                ActivateSniperScope();
+            }
         }
         else
         {
             StopAllCoroutines();
             StartCoroutine(FineSightDeactivateCoroutine());
+            if(curWeapon.WeaponType == "Sniper")
+            {
+                DeactivateSniperScope();
+            }
         }
     }
 
@@ -218,6 +237,20 @@ public class GunController : MonoSingleton<GunController>
             curWeapon.transform.localPosition = Vector3.Lerp(curWeapon.transform.localPosition, originPos[curWeapon.WeaponNum], 0.08f);
             yield return null;
         }
+    }
+
+    private void ActivateSniperScope()
+    {
+        sniperScope.SetActive(true);
+        weaponCamera.SetActive(false);
+        cam.fieldOfView = ScopeFOV;
+    }
+
+    private void DeactivateSniperScope()
+    {
+        sniperScope.SetActive(false);
+        weaponCamera.SetActive(true);
+        cam.fieldOfView = normalFOV;
     }
 
     IEnumerator RetroActionCoroutine()
