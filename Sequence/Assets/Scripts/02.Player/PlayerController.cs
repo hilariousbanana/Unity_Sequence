@@ -24,7 +24,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private bool bWalk = false;
     private bool bRun = false;
-    private bool bOnGround = true;
+    public bool bOnGround = true;
     private bool bCrouch = false;
 
     [SerializeField]
@@ -67,8 +67,8 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private void IsOnGround()
     {
-        bOnGround = Physics.Raycast(transform.position, Vector3.down, collider.bounds.extents.y + 0.1f);
-        crosshair.RunAnim(!bOnGround);
+        bOnGround = Physics.Raycast(transform.position, Vector3.down, collider.bounds.extents.y);
+        crosshair.RunAnim(!bOnGround); 
     }
 
     private void TryJump()
@@ -83,7 +83,11 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         if (bCrouch)
             Crouch();
+        if (!bOnGround)
+            return;
+        bOnGround = false;
         rigidBody.velocity = transform.up * jumpForce;
+        crosshair.RunAnim(!bOnGround);
     }
 
     private void TryRun()
@@ -221,5 +225,11 @@ public class PlayerController : MonoSingleton<PlayerController>
     public bool GetPlayerRun()
     {
         return bRun;
+    }
+
+    public void EndJump()
+    {
+        bOnGround = true;
+        crosshair.RunAnim(bOnGround);
     }
 }
