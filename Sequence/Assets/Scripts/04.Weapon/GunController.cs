@@ -39,6 +39,13 @@ public class GunController : MonoSingleton<GunController>
     public float ScopeFOV;
     private float normalFOV = 60f;
 
+    //Grenade
+    [SerializeField]
+    private GameObject grenadePrefab;
+    [SerializeField]
+    private Transform grenadeTransform;
+    public float throwForce;
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -145,10 +152,33 @@ public class GunController : MonoSingleton<GunController>
         curWeapon.CurBulletCount--;
         curFireRate = curWeapon.FireRate;
         PlaySFX(curWeapon.ShootSound);
-        curWeapon.Muzzle.Play();
-        Hit();
+        if (curWeapon.WeaponType == "Grenade")
+        {
+            ThrowGrenade();
+        }
+        else
+        {
+            curWeapon.Muzzle.Play();
+            Hit();
+            StopAllCoroutines();
+            StartCoroutine(RetroActionCoroutine());
+        }
+
+    }
+
+    private void ThrowGrenade()
+    {
         StopAllCoroutines();
-        StartCoroutine(RetroActionCoroutine());
+        StartCoroutine(InstantiateGrenadeCoroutine());
+    }
+
+    IEnumerator InstantiateGrenadeCoroutine()
+    {
+        yield return new WaitForSeconds(0.8f);
+        //GameObject grenade = Instantiate(grenadePrefab, transform.position, transform.rotation);
+        GameObject grenade = Instantiate(grenadePrefab, grenadeTransform.position, grenadeTransform.rotation);
+        Rigidbody rb = grenade.GetComponent<Rigidbody>();
+        rb.AddForce(grenadeTransform.forward * throwForce, ForceMode.Impulse);
     }
 
     private void Hit()

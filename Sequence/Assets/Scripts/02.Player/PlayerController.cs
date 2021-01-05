@@ -5,6 +5,29 @@ using UnityEngine;
 public class PlayerController : MonoSingleton<PlayerController>
 {
     [SerializeField]
+    private PlayerStat stat;
+    [SerializeField]
+    private Camera cam;
+    
+    public enum STATE
+    {
+        Idle,
+        Damaged,
+        Died, 
+        Respawned
+    }
+
+    private STATE state = STATE.Idle;
+
+    //Variables
+    #region GetComponents(Rigidbody, Collider, Crosshair)
+    private Rigidbody rigidBody;
+    private CapsuleCollider collider;
+    private CrosshairController crosshair;
+    #endregion
+
+    #region Movement Variables(Walk, Run, Crouch) - Floats
+    [SerializeField]
     private float walkSpeed;
     [SerializeField]
     private float runSpeed;
@@ -17,15 +40,18 @@ public class PlayerController : MonoSingleton<PlayerController>
     private float crouchPosY;
     private float originPosY;
     private float applyPosY;
+    #endregion
 
-
-    [SerializeField]
-    private float camMoveY;
-
+    #region Movement Variables - Bools
     private bool bWalk = false;
     private bool bRun = false;
     public bool bOnGround = true;
     private bool bCrouch = false;
+    #endregion
+
+    #region Camera Variables(Rotation, Movement) - Floats
+    [SerializeField]
+    private float camMoveY;
 
     [SerializeField]
     private float lookSensitivity;
@@ -33,13 +59,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     [SerializeField]
     private float camRotLimit;
     private float curCamRotX = 0f;
-
-    [SerializeField]
-    private Camera cam;
-
-    private Rigidbody rigidBody;
-    private CapsuleCollider collider;
-    private CrosshairController crosshair;
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -63,8 +83,97 @@ public class PlayerController : MonoSingleton<PlayerController>
         Move();
         CameraRotation();
         PlayerRotation();
+        PlayerStateMachine();
     }
 
+    #region Player FSM
+    void PlayerStateMachine()
+    {
+        switch(state)
+        {
+            case STATE.Idle:
+                if(IsDamaged())
+                {
+                    ChangePlayerState(STATE.Damaged);
+                }
+                break;
+
+            case STATE.Damaged:
+                if(IsDied())
+                {
+                    ChangePlayerState(STATE.Died);
+                }
+                break;
+
+            case STATE.Died:
+                if(stat.RespawnCount > 0)
+                {
+                    ChangePlayerState(STATE.Respawned);
+                }
+                else
+                {
+                    //게임오버
+                }
+                break;
+
+            case STATE.Respawned:
+                ChangePlayerState(STATE.Idle);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void ChangePlayerState(STATE _state)
+    {
+        switch (_state)
+        {
+            case STATE.Idle:
+                state = STATE.Idle;
+                break;
+
+            case STATE.Damaged:
+                state = STATE.Damaged;
+                break;
+
+            case STATE.Died:
+                state = STATE.Died;
+                break;
+
+            case STATE.Respawned:
+                Respawn();
+                stat.RespawnCount--;
+                state = STATE.Respawned;
+                break;
+            default:
+                break;
+        }
+    }
+
+    private bool IsDamaged()
+    {
+        //Enemy와의 접촉 체크
+        return true;
+    }
+
+    private bool IsDied()
+    {
+        if(stat.HP > 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void Respawn()
+    {
+
+    }
+    #endregion
+
+    #region (Try)Movement (Jump, Run, Crouch)
     private void IsOnGround()
     {
         bOnGround = Physics.Raycast(transform.position, Vector3.down, collider.bounds.extents.y);
@@ -149,7 +258,6 @@ public class PlayerController : MonoSingleton<PlayerController>
         cam.transform.localPosition = new Vector3(0, applyPosY, 0);
     }
 
-
     private void MoveCheck(float dirX, float dirZ)
     {
         if (!bRun && !bCrouch && bOnGround)
@@ -167,6 +275,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         }
 
     }
+
     private void Move()
     {
         float moveDirX = Input.GetAxisRaw("Horizontal");
@@ -197,6 +306,9 @@ public class PlayerController : MonoSingleton<PlayerController>
         applySpeed = walkSpeed;
     }
 
+    #endregion
+
+    #region Rotation
     private void CameraRotation()
     {
         float xRot = Input.GetAxisRaw("Mouse Y");
@@ -216,7 +328,9 @@ public class PlayerController : MonoSingleton<PlayerController>
 
         rigidBody.MoveRotation(rigidBody.rotation * Quaternion.Euler(playerRotY));
     }
+    #endregion
 
+    #region GetValues(bWalk, bRun)
     public bool GetPlayerWalk()
     {
         return bWalk;
@@ -226,10 +340,17 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         return bRun;
     }
+    #endregion
 
-    public void EndJump()
+    #region Set/Change Values(HP, Respawn Count)
+    public void ChangeHP(int _damage)
     {
-        bOnGround = true;
-        crosshair.RunAnim(bOnGround);
+        stat.HP -= _damage;
     }
+
+    public void SetRespawnCount(int _newCount)
+    {
+        stat.RespawnCount = _newCount;
+    }
+    #endregion
 }
