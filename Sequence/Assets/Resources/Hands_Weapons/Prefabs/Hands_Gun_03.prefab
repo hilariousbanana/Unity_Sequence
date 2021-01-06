@@ -2250,7 +2250,7 @@ MonoBehaviour:
   ReloadTime: 2.3
   bPlaySFX: 0
   bWalkSound: 0
-  Damage: 0
+  Damage: 10
   MaxBulletCount: 10
   CurBulletCount: 10
   ReloadCount: 3

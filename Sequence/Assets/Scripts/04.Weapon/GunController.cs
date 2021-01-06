@@ -190,7 +190,12 @@ public class GunController : MonoSingleton<GunController>
             out hitInfo, curWeapon.Range))
         {
             Debug.DrawRay(cam.transform.position, cam.transform.forward * 10 , Color.red, 100);
-            var clone = Instantiate(hitEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal)); //hitinfo.normal = 충돌한 표면방향
+            Debug.Log(hitInfo.collider.gameObject.tag);
+            if(hitInfo.collider.gameObject.tag == "Enemy")
+            {
+                hitInfo.collider.gameObject.GetComponent<Enemy>().Damaged(curWeapon.Damage);
+            }
+            var clone = Instantiate(hitEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal), hitInfo.collider.gameObject.transform); //hitinfo.normal = 충돌한 표면방향
             Destroy(clone, 1.5f);
         }
     }

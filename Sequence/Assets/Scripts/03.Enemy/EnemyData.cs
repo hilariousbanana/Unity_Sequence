@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Robot", menuName = "Scriptable Object/Robot", order = 0)]
-public class EnemyData : ScriptableObject
+[System.Serializable]
+public class EnemyData : MonoBehaviour
 {
     public string RobotType;
     public int Hp;
     public int Damage;
-    public float SightRange;
-    public float MoveSpeed;
-    public float ItemDrop;
-    public float CoolDown;
+    public int ItemDrop;
+    public int KeyDrop;
+    public int HealPackADrop;
+    public int HealPackBDrop;
 }
