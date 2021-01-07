@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 2093443782267337543}
   - component: {fileID: 4097195505043946274}
   - component: {fileID: 7606436282107810403}
-  - component: {fileID: 1281516398581430802}
   - component: {fileID: 4222610446930407642}
+  - component: {fileID: 1651822896519089085}
   m_Layer: 0
   m_Name: rust_key
   m_TagString: Untagged
@@ -114,18 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canRotate: 1
   speed: 80
---- !u!114 &1281516398581430802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 374289202576707483}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e38330fa99e76e4ba2e2c924ac310d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  rotateDir: {x: 0, y: 0, z: 1}
 --- !u!135 &4222610446930407642
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -139,6 +128,18 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1651822896519089085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374289202576707483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e38330fa99e76e4ba2e2c924ac310d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7686337659100404353
 GameObject:
   m_ObjectHideFlags: 0

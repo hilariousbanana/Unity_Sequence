@@ -104,7 +104,7 @@ public class TutorialRobot : Enemy
     public override void ChangeState(STATE _state)
     {
         state = _state;
-        //Debug.Log(state);
+        Debug.Log(state);
 
         switch (_state)
         {
@@ -134,7 +134,8 @@ public class TutorialRobot : Enemy
 
     IEnumerator IdleCoroutine()
     {
-        yield return new WaitForSeconds(2.5f);
+        float waitTime = Random.Range(0f, 4f);
+        yield return new WaitForSeconds(waitTime);
         bAction = false;
         ChangeState(STATE.Wander);
     }
@@ -179,6 +180,7 @@ public class TutorialRobot : Enemy
         if (drop * 10 <= stat.ItemDrop)
         {
             int item = Random.Range(0, (stat.KeyDrop + stat.HealPackADrop + stat.HealPackBDrop) + 1);
+            Debug.Log(item);
             if (item <= stat.KeyDrop) // key
             {
                 Instantiate(Key, ItemDropTransform.position, ItemDropTransform.rotation);
@@ -198,12 +200,12 @@ public class TutorialRobot : Enemy
     }
 
     #region SetValues(PlayerInRange, PlayerTransform)
-    public void SetPlayerInRange(bool _IsInRange)
+    public override void SetPlayerInRange(bool _IsInRange)
     {
         bPlayerInRange = _IsInRange;
     }
 
-    public void SetPlayerTransform(Transform _player)
+    public override void SetPlayerTransform(Transform _player)
     {
         playerTransform = _player;
     }

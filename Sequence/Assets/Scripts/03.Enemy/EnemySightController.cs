@@ -11,6 +11,7 @@ public class EnemySightController : MonoSingleton<EnemySightController>
     public LayerMask ObstacleMask;
 
     private Transform enemyTransform;
+    private Enemy enemy;
 
     [SerializeField]
     private Transform rayTransform;
@@ -61,6 +62,7 @@ public class EnemySightController : MonoSingleton<EnemySightController>
                 if (!Physics.Raycast(enemyTransform.position, dirToTarget, distToTarget, ObstacleMask))
                 {
                     Debug.DrawLine(rayTransform.position, target.position, Color.red);
+                    
                     enemy.SetPlayerInRange(true);
                     enemy.SetPlayerTransform(target);
                     return;

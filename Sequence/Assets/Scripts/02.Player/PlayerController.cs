@@ -112,7 +112,7 @@ public class PlayerController : MonoSingleton<PlayerController>
                 }
                 else
                 {
-                    //게임오버
+                    //게임오버 //스테이지 다시시작?
                 }
                 break;
 
@@ -330,7 +330,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     }
     #endregion
 
-    #region GetValues(bWalk, bRun)
+    #region GetValues(bWalk, bRun, HP)
     public bool GetPlayerWalk()
     {
         return bWalk;
@@ -340,12 +340,17 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         return bRun;
     }
+
+    public int GetPlayerHP()
+    {
+        return stat.HP;
+    }
     #endregion
 
     #region Set/Change Values(HP, Respawn Count)
-    public void ChangeHP(int _damage)
+    public void ChangeHP(int _value)
     {
-        stat.HP -= _damage;
+        stat.HP += _value;
     }
 
     public void SetRespawnCount(int _newCount)

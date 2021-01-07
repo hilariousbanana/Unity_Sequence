@@ -15,15 +15,24 @@ public class HUDManager : MonoSingleton<HUDManager>
     [SerializeField]
     private Text[] text_Bullet;
 
+    [SerializeField]
+    private Text PlayerHP;
+    private PlayerController player;
+
     //[SerializeField]
     //private Image img_Weapon;
     [SerializeField]
     private Animator Anim;
 
+    private void Start()
+    {
+        player = FindObjectOfType<PlayerController>();
+    }
     // Update is called once per frame
     void Update()
     {
         CheckBullet();
+        CheckPlayerHP();
     }
 
     private void CheckBullet()
@@ -37,4 +46,8 @@ public class HUDManager : MonoSingleton<HUDManager>
         text_Bullet[3].text = curWeapon.WeaponType;
     }
 
+    private void CheckPlayerHP()
+    {
+        PlayerHP.text = player.GetPlayerHP().ToString();
+    }
 }

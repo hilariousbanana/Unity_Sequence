@@ -28,4 +28,8 @@ public abstract class Enemy : MonoBehaviour
     public abstract void Damaged(int _damage);
 
     public abstract void Died();
+
+    public abstract void SetPlayerInRange(bool _IsInRange);
+
+    public abstract void SetPlayerTransform(Transform _player);
 }
