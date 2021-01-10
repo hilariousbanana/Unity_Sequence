@@ -1360,7 +1360,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponType: Grenade
   WeaponNum: 1
-  Range: 0
+  Range: 50
   Accuracy: 0
   FireRate: 0
   ReloadTime: 0

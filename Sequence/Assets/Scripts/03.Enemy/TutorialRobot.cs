@@ -104,7 +104,6 @@ public class TutorialRobot : Enemy
     public override void ChangeState(STATE _state)
     {
         state = _state;
-        Debug.Log(state);
 
         switch (_state)
         {
