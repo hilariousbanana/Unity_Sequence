@@ -171,6 +171,14 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
 
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Enemy")
+        {
+            ChangeHP(-30);
+        }
+    }
     #endregion
 
     #region (Try)Movement (Jump, Run, Crouch)
@@ -350,7 +358,18 @@ public class PlayerController : MonoSingleton<PlayerController>
     #region Set/Change Values(HP, Respawn Count)
     public void ChangeHP(int _value)
     {
-        stat.HP += _value;
+        int temp = 0;
+        temp = stat.HP +_value;
+
+        if(temp >= 100)
+        {
+            temp = 100;
+        }
+        else if(temp <= 0)
+        {
+            temp = 0;
+        }
+        stat.HP = temp;
     }
 
     public void SetRespawnCount(int _newCount)

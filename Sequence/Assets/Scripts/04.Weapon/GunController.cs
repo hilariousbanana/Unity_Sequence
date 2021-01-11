@@ -44,7 +44,8 @@ public class GunController : MonoSingleton<GunController>
     private GameObject grenadePrefab;
     [SerializeField]
     private Transform grenadeTransform;
-    public float throwForce;
+    public float throwAngle = 45.0f;
+    public float gravity = 9.8f;
 
     private void Start()
     {
@@ -177,9 +178,35 @@ public class GunController : MonoSingleton<GunController>
         yield return new WaitForSeconds(0.8f);
         //GameObject grenade = Instantiate(grenadePrefab, transform.position, transform.rotation);
         GameObject grenade = Instantiate(grenadePrefab, grenadeTransform.position, grenadeTransform.rotation);
-        Rigidbody rb = grenade.GetComponent<Rigidbody>();
-        rb.AddForce(grenadeTransform.forward * throwForce, ForceMode.Impulse);
+        //Rigidbody rb = grenade.GetComponent<Rigidbody>();
+        //rb.AddForce(grenadeTransform.forward * throwForce, ForceMode.Impulse);
+
+        float target_Dist = 20f;
+
+        //Calculate the Velocity Needed to Throw the Object to the Target at Specified Angle
+        float projectile_Velo = target_Dist / (Mathf.Sin(2 * throwAngle * Mathf.Deg2Rad) / gravity);
+
+        //Extract the X and Y Component of the Velocity
+        float Velo_X = Mathf.Sqrt(projectile_Velo) *  Mathf.Cos(throwAngle * Mathf.Deg2Rad);
+        float Velo_Y = Mathf.Sqrt(projectile_Velo) * Mathf.Sin(throwAngle * Mathf.Deg2Rad);
+
+        //Flight Time
+        float flightDuration = target_Dist / Velo_X;
+
+        //Rotate Projectile to face the Target
+        grenade.transform.rotation = Quaternion.LookRotation(grenade.transform.forward);
+
+        float elapse_time = 0;
+
+        while(elapse_time < flightDuration)
+        {
+            grenade.transform.Translate(0, (Velo_Y - (gravity * elapse_time)) * Time.deltaTime, Velo_X * Time.deltaTime);
+            elapse_time += Time.deltaTime;
+            yield return null;
+        }
+
     }
+
 
     private void Hit()
     {

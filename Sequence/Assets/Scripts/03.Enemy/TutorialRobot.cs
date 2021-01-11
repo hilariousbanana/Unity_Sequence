@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class TutorialRobot : Enemy
 {
@@ -16,10 +17,18 @@ public class TutorialRobot : Enemy
     private ParticleSystem Explosion;
     [SerializeField]
     private Transform ItemDropTransform;
+    [SerializeField]
+    private Transform HPBarPos;
+    private RectTransform hpBar;
+
     public GameObject Key;
     public GameObject HealPackA;
     public GameObject HealPackB;
     private Animation animation;
+
+    public Slider HPBar;
+    private GameObject canvas;
+    private Camera camera;
 
     STATE state = STATE.Idle;
 
@@ -34,6 +43,10 @@ public class TutorialRobot : Enemy
         nav = GetComponent<NavMeshAgent>();
         collider = GetComponent<SphereCollider>();
         animation = GetComponent<Animation>();
+        canvas = GameObject.Find("Canvas");
+        hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
+        hpBar.gameObject.SetActive(false);
+        camera = Camera.main;
     }
 
     // Update is called once per frame
@@ -41,6 +54,9 @@ public class TutorialRobot : Enemy
     {
         CheckPlayerInRange();
         EnemyState();
+        Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
+        hpBar.position = _hpPos;
+        hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
     }
 
     public override void EnemyState()
@@ -86,7 +102,7 @@ public class TutorialRobot : Enemy
                 break;
 
             case STATE.Damaged:
-                if (stat.Hp <= 0)
+                if (stat.curHp <= 0)
                 {
                     ChangeState(STATE.Died);
                 }
@@ -120,9 +136,12 @@ public class TutorialRobot : Enemy
                 break;
 
             case STATE.Attack:
+                
                 break;
 
             case STATE.Damaged:
+                StopAllCoroutines();
+                StartCoroutine(HPBarCoroutine());
                 break;
 
             case STATE.Died:
@@ -164,8 +183,20 @@ public class TutorialRobot : Enemy
 
     public override void Damaged(int _damage)
     {
-        stat.Hp -= _damage;
+        int temp;
+        temp = stat.curHp - _damage;
+        if (temp <= 0)
+            temp = 0;
+
+        stat.curHp= temp;
         ChangeState(STATE.Damaged);
+    }
+
+    IEnumerator HPBarCoroutine()
+    {
+        hpBar.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        hpBar.gameObject.SetActive(false);
     }
 
     public override void Died()
@@ -194,7 +225,7 @@ public class TutorialRobot : Enemy
 
             }
         }
-
+        Destroy(hpBar.gameObject, 1.5f);
         Destroy(this.gameObject, 1.5f);
     }
 

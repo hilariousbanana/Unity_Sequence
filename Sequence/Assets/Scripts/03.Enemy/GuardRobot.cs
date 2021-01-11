@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class GuardRobot : Enemy
 {
@@ -14,6 +15,13 @@ public class GuardRobot : Enemy
     private SphereCollider collider;
     [SerializeField]
     private ParticleSystem Explosion;
+    [SerializeField]
+    private Transform HPBarPos;
+    private RectTransform hpBar;
+    public Slider HPBar;
+    private GameObject canvas;
+    private Camera camera;
+
 
     STATE state = STATE.Idle;
 
@@ -28,6 +36,13 @@ public class GuardRobot : Enemy
         stat = GetComponent<EnemyData>();
         nav = GetComponent<NavMeshAgent>();
         collider = GetComponent<SphereCollider>();
+        canvas = GameObject.Find("Canvas");
+        hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
+        hpBar.gameObject.SetActive(false);
+        camera = Camera.main;
+        Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
+        hpBar.position = _hpPos;
+        hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
     }
 
     // Update is called once per frame
@@ -68,7 +83,7 @@ public class GuardRobot : Enemy
                 break;
 
             case STATE.Damaged:
-                if (stat.Hp <= 0)
+                if (stat.curHp <= 0)
                 {
                     ChangeState(STATE.Died);
                 }
@@ -106,6 +121,8 @@ public class GuardRobot : Enemy
                 break;
 
             case STATE.Damaged:
+                StopAllCoroutines();
+                StartCoroutine(HPBarCoroutine());
                 break;
 
             case STATE.Died:
@@ -155,8 +172,15 @@ public class GuardRobot : Enemy
 
     public override void Damaged(int _damage)
     {
-        stat.Hp -= _damage;
+        stat.curHp -= _damage;
         ChangeState(STATE.Damaged);
+    }
+
+    IEnumerator HPBarCoroutine()
+    {
+        hpBar.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        hpBar.gameObject.SetActive(false);
     }
 
     public override void Died()

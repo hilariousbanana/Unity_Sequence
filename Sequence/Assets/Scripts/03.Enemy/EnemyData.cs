@@ -6,7 +6,8 @@ using UnityEngine;
 public class EnemyData : MonoBehaviour
 {
     public string RobotType;
-    public int Hp;
+    public int curHp;
+    public int maxHP;
     public int Damage;
     public int ItemDrop;
     public int KeyDrop;

@@ -37,10 +37,9 @@ public class Grenade : MonoBehaviour
 
         foreach (Collider nearbyObject in colliders)
         {
-            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-            if (rb != null)
+            if(nearbyObject.gameObject.tag == "Enemy")
             {
-                rb.AddExplosionForce(700f, transform.position, radius);
+                nearbyObject.gameObject.GetComponent<Enemy>().Damaged(-50);
             }
         }
 
