@@ -21,10 +21,14 @@ public class NormalRobot : Enemy
     private Transform HPBarPos;
     private RectTransform hpBar;
 
+    private AudioSource audio;
+    public ParticleSystem muzzle;
     public GameObject Key;
     public GameObject HealPackA;
     public GameObject HealPackB;
     private Animator anim;
+    [SerializeField]
+    private Transform HeadPos;
 
     public Slider HPBar;
     private GameObject canvas;
@@ -35,6 +39,7 @@ public class NormalRobot : Enemy
     public bool bAction;
     public bool bWalk;
     public bool bPlayerInRange;
+    public bool bShot;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +48,7 @@ public class NormalRobot : Enemy
         nav = GetComponent<NavMeshAgent>();
         collider = GetComponent<SphereCollider>();
         anim = GetComponent<Animator>();
+        audio = GetComponent<AudioSource>();
         canvas = GameObject.Find("Canvas");
         hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
         hpBar.gameObject.SetActive(false);
@@ -79,6 +85,11 @@ public class NormalRobot : Enemy
                 if (bPlayerInRange)
                 {
                     ChangeState(STATE.InRange);
+                }
+                else
+                {
+                    nav.speed = 3.5f;
+                    CheckRemainingDistance();
                 }
                 break;
 
@@ -124,18 +135,15 @@ public class NormalRobot : Enemy
         switch (_state)
         {
             case STATE.Idle:
-                anim.SetBool("Walk", false);
-                anim.SetBool("Run", false);
                 break;
 
             case STATE.Wander:
-                anim.SetBool("Walk", true);
                 Wander();
                 break;
 
             case STATE.InRange:
-                TracePlayer();
-
+                if(!bShot)
+                    TracePlayer();
                 break;
 
             case STATE.Attack:
@@ -156,6 +164,7 @@ public class NormalRobot : Enemy
     IEnumerator IdleCoroutine()
     {
         float waitTime = Random.Range(0f, 4f);
+        anim.SetBool("Walk", false);
         yield return new WaitForSeconds(waitTime);
         bAction = false;
         ChangeState(STATE.Wander);
@@ -167,14 +176,55 @@ public class NormalRobot : Enemy
         anim.SetBool("Walk", true);
         target = routes[rand];
         nav.SetDestination(target.position);
+    }
 
-        ChangeState(STATE.Idle);
+    void CheckRemainingDistance()
+    {
+        if (nav.remainingDistance <= 0.5f)
+        { 
+            ChangeState(STATE.Idle);
+        }
     }
 
     public override void TracePlayer()
     {
+        bShot = true;
         anim.SetTrigger("Shot");
-        nav.SetDestination(playerTransform.position);
+        Shot();
+        nav.speed = 0;
+        Vector3 relativePos = playerTransform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(relativePos);
+        transform.rotation = rotation;
+        StartCoroutine(AttackPlayerCoroutine());
+        //nav.SetDestination(playerTransform.position);
+    }
+    
+    public void Shot()
+    {
+        RaycastHit hitInfo;
+        if (Physics.Raycast(HeadPos.position, HeadPos.transform.forward * 10, out hitInfo, 10))
+        {
+            Debug.Log(hitInfo.collider.tag);
+            Debug.DrawRay(HeadPos.transform.position, HeadPos.transform.forward * 10, Color.red, 100);
+            Debug.Log(hitInfo.collider.gameObject.tag);
+            if (hitInfo.collider.gameObject.tag == "Player")
+            {
+                hitInfo.collider.gameObject.GetComponent<PlayerController>().ChangeHP(-stat.Damage);
+                hitInfo.collider.gameObject.GetComponent<PlayerController>().SetDamaged(true);
+            }
+        }
+    }
+
+    IEnumerator AttackPlayerCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        bShot = false;
+    }
+
+    public void PlayMuzzle()
+    {
+        muzzle.Play();
+        audio.Play();
     }
 
     public override void CheckPlayerInRange()
@@ -199,8 +249,15 @@ public class NormalRobot : Enemy
     IEnumerator HPBarCoroutine()
     {
         hpBar.gameObject.SetActive(true);
+        nav.speed = 0;
+        anim.SetTrigger("Damaged");
         yield return new WaitForSeconds(2f);
         hpBar.gameObject.SetActive(false);
+    }
+
+    public void DamagedAnimation()
+    {
+        nav.speed = 3.5f;
     }
 
     public override void Died()

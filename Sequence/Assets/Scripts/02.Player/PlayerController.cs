@@ -17,13 +17,14 @@ public class PlayerController : MonoSingleton<PlayerController>
         Respawned
     }
 
-    private STATE state = STATE.Idle;
+    public STATE state = STATE.Idle;
 
     //Variables
     #region GetComponents(Rigidbody, Collider, Crosshair)
     private Rigidbody rigidBody;
     private CapsuleCollider collider;
     private CrosshairController crosshair;
+    private BloodScreenController bloodScreen;
     #endregion
 
     #region Movement Variables(Walk, Run, Crouch) - Floats
@@ -47,6 +48,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     private bool bRun = false;
     public bool bOnGround = true;
     private bool bCrouch = false;
+    private bool bDamaged = false;
     #endregion
 
     #region Camera Variables(Rotation, Movement) - Floats
@@ -66,6 +68,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         rigidBody = GetComponent<Rigidbody>();
         crosshair = FindObjectOfType<CrosshairController>();
+        bloodScreen = FindObjectOfType<BloodScreenController>();
         collider = GetComponent<CapsuleCollider>();
 
         applySpeed = walkSpeed;
@@ -135,10 +138,12 @@ public class PlayerController : MonoSingleton<PlayerController>
 
             case STATE.Damaged:
                 state = STATE.Damaged;
+                Damaged();
                 break;
 
             case STATE.Died:
                 state = STATE.Died;
+                Died();
                 break;
 
             case STATE.Respawned:
@@ -153,8 +158,13 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private bool IsDamaged()
     {
-        //Enemy와의 접촉 체크
-        return true;
+        return bDamaged;
+    }
+
+    void Damaged()
+    {
+        bDamaged = false;
+        bloodScreen.DamagedAnim();
     }
 
     private bool IsDied()
@@ -167,6 +177,11 @@ public class PlayerController : MonoSingleton<PlayerController>
         return true;
     }
 
+    void Died()
+    {
+        bloodScreen.DiedAnim();
+    }
+
     private void Respawn()
     {
 
@@ -176,6 +191,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         if(collision.gameObject.tag == "Enemy")
         {
+            bDamaged = true;
             ChangeHP(-30);
         }
     }
@@ -375,6 +391,11 @@ public class PlayerController : MonoSingleton<PlayerController>
     public void SetRespawnCount(int _newCount)
     {
         stat.RespawnCount = _newCount;
+    }
+
+    public void SetDamaged(bool _damaged)
+    {
+        bDamaged = _damaged;
     }
     #endregion
 }

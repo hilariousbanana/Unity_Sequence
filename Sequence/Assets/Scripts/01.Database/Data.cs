@@ -8,6 +8,13 @@ public class Data
     public List<Quest> QuestList = new List<Quest>();
     public List<ClearRecord> RecordList = new List<ClearRecord>();
 
+    public int CurrentStage;
+    public int CurrentKillCount;
+    public int CurrentRespawnCount;
+    public int CurrentPotionCount;
+    public bool HaveKey = false;
+    public bool BossKilled = false;
+
     public void AddQuestList()
     {
         QuestList.Add(new Quest(Quest.STAGE.Stage1, 10, 0, 0, 0));
