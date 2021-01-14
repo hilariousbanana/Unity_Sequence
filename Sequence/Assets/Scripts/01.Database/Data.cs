@@ -35,14 +35,15 @@ public class Data
         AddQuestList();
 
         CurrentStage = 0;
-        CurrentKillCount = 0;
-        CurrentRespawnCount = 0;
-        CurrentPotionCount = 0;
 
         MaxKillCount = QuestList[0].KillCount;
         MaxRespawnCount = QuestList[0].RespawnCount;
         MaxPotionCount = QuestList[0].PotionCount;
         HaveKey = QuestList[0].bHaveKey;
         BossKilled = QuestList[0].bBossKilled;
+
+        CurrentKillCount = MaxKillCount;
+        CurrentRespawnCount = MaxRespawnCount;
+        CurrentPotionCount = MaxPotionCount;
     }
 }

@@ -6,5 +6,4 @@ using UnityEngine;
 public class PlayerStat
 {
     public int HP;
-    public int RespawnCount;
 }

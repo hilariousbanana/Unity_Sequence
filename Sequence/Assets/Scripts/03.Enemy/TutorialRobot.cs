@@ -30,6 +30,8 @@ public class TutorialRobot : Enemy
     private GameObject canvas;
     private Camera camera;
 
+    private AlertScreenController BeCareful;
+
     STATE state = STATE.Idle;
 
     public bool bAction;
@@ -45,6 +47,7 @@ public class TutorialRobot : Enemy
         animation = GetComponent<Animation>();
         canvas = GameObject.Find("Canvas");
         hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
+        BeCareful = GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(3).GetComponent<AlertScreenController>();
         hpBar.gameObject.SetActive(false);
         camera = Camera.main;
     }
@@ -54,6 +57,7 @@ public class TutorialRobot : Enemy
     {
         CheckPlayerInRange();
         EnemyState();
+
         Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
         hpBar.position = _hpPos;
         hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
@@ -170,6 +174,7 @@ public class TutorialRobot : Enemy
 
     public override void TracePlayer()
     {
+        BeCareful.SetTrace(true);
         nav.SetDestination(playerTransform.position);
     }
 
@@ -178,6 +183,10 @@ public class TutorialRobot : Enemy
         if (bPlayerInRange)
         {
             ChangeState(STATE.InRange);
+        }
+        else
+        {
+            BeCareful.SetTrace(false);
         }
     }
 

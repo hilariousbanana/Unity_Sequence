@@ -19,6 +19,8 @@ public class HUDManager : MonoSingleton<HUDManager>
     private Text PlayerHP;
     private PlayerController player;
 
+    public GameObject RespawnBar;
+
     //[SerializeField]
     //private Image img_Weapon;
     [SerializeField]

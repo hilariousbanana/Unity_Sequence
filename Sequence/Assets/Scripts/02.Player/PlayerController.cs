@@ -8,6 +8,8 @@ public class PlayerController : MonoSingleton<PlayerController>
     private PlayerStat stat;
     [SerializeField]
     private Camera cam;
+    [SerializeField]
+    private Transform respawn;//조만간 삭제예정
     
     public enum STATE
     {
@@ -24,7 +26,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     private Rigidbody rigidBody;
     private CapsuleCollider collider;
     private CrosshairController crosshair;
-    private BloodScreenController bloodScreen;
+    public AlertScreenController bloodScreen;
     #endregion
 
     #region Movement Variables(Walk, Run, Crouch) - Floats
@@ -68,7 +70,6 @@ public class PlayerController : MonoSingleton<PlayerController>
     {
         rigidBody = GetComponent<Rigidbody>();
         crosshair = FindObjectOfType<CrosshairController>();
-        bloodScreen = FindObjectOfType<BloodScreenController>();
         collider = GetComponent<CapsuleCollider>();
 
         applySpeed = walkSpeed;
@@ -106,10 +107,14 @@ public class PlayerController : MonoSingleton<PlayerController>
                 {
                     ChangePlayerState(STATE.Died);
                 }
+                else
+                {
+                    ChangePlayerState(STATE.Idle);
+                }
                 break;
 
             case STATE.Died:
-                if(stat.RespawnCount > 0)
+                if(DataController.instance.data.CurrentRespawnCount > 0)
                 {
                     ChangePlayerState(STATE.Respawned);
                 }
@@ -148,7 +153,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
             case STATE.Respawned:
                 Respawn();
-                stat.RespawnCount--;
+                DataController.instance.data.CurrentRespawnCount--;
                 state = STATE.Respawned;
                 break;
             default:
@@ -163,8 +168,10 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     void Damaged()
     {
-        bDamaged = false;
+        Debug.Log("Damaged.");
         bloodScreen.DamagedAnim();
+        bDamaged = false;
+        
     }
 
     private bool IsDied()
@@ -184,7 +191,18 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private void Respawn()
     {
+        StartCoroutine(RespawnCoroutine());
+    }
 
+    IEnumerator RespawnCoroutine()
+    {
+        bloodScreen.SetRespawn(false);
+        bloodScreen.DiedAnim();
+        transform.position = respawn.position;
+        HUDManager.instance.RespawnBar.SetActive(true);
+        yield return new WaitForSeconds(0.8f);
+        HUDManager.instance.RespawnBar.SetActive(false);
+        bloodScreen.SetRespawn(true);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -386,11 +404,6 @@ public class PlayerController : MonoSingleton<PlayerController>
             temp = 0;
         }
         stat.HP = temp;
-    }
-
-    public void SetRespawnCount(int _newCount)
-    {
-        stat.RespawnCount = _newCount;
     }
 
     public void SetDamaged(bool _damaged)
