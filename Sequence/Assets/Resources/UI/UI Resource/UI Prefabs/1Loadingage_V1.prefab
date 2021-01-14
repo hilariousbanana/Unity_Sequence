@@ -325,7 +325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.6000004, y: -445.9}
+  m_AnchoredPosition: {x: 6.6000004, y: -329}
   m_SizeDelta: {x: 1198.9, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &114410905162598814
@@ -379,7 +379,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114073866951986688}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: SliderValuePass, Assembly-CSharp
         m_MethodName: UpdateProgress
         m_Mode: 0
         m_Arguments:
@@ -659,7 +659,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: b89877adf554225448748f5ea51b23b9, type: 3}
-    m_FontSize: 26
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -667,8 +667,8 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 60%
 --- !u!114 &114073866951986688
@@ -761,7 +761,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SCI-FI GAME NAME
+  m_Text: Loading... To Stage 1
 --- !u!1 &8420548281308725851
 GameObject:
   m_ObjectHideFlags: 0
