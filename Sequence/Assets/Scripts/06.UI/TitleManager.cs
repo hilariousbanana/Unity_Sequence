@@ -6,6 +6,11 @@ public class TitleManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject Title;
+    [SerializeField]
+    private GameObject Option;
+    [SerializeField]
+    private Animator anim;
+
     [SerializeField] [Range(0f, 10f)]
     private float speed = 1f;
     [SerializeField] [Range(0f, 10f)]
@@ -14,6 +19,7 @@ public class TitleManager : MonoBehaviour
     private float runningTime = 0f;
     private float yPos = 0f;
     private float xPos;
+    private bool bOpened = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +44,31 @@ public class TitleManager : MonoBehaviour
 
     public void ButtonOption()
     {
+        StartCoroutine(WindowActivateTimer());
+    }
 
+    public void ButtonCloseWindow()
+    {
+        StartCoroutine(WindowActivateTimer());
+    }
+
+    IEnumerator WindowActivateTimer()
+    {
+        bOpened = !bOpened;
+
+        if(!bOpened)
+        {
+            Time.timeScale = 1f;
+        }
+
+        Option.SetActive(bOpened);
+
+        yield return new WaitForSeconds(0.5f);
+
+        if(bOpened)
+        {
+            Time.timeScale = 0f;
+        }
     }
 
     public void ButtonExitGame()

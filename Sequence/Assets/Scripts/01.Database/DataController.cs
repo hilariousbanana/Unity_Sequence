@@ -18,4 +18,14 @@ public class DataController : MonoSingleton<DataController>
     {
         
     }
+
+    public void NewGame()
+    {
+
+    }
+
+    public void SaveGame()
+    {
+
+    }
 }

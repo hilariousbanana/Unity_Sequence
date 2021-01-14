@@ -18,7 +18,12 @@ public class SoundManager : MonoSingleton<SoundManager>
 
     public Sound[] Effects;
     public Sound[] BGM;
-    
+
+    private void Start()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     public void PlaySound(string _name)
     {
         for (int i = 0; i < Effects.Length; i++)

@@ -24,8 +24,7 @@ public class LoadingSceneManager : MonoSingleton<LoadingSceneManager>
     {
         string temp = string.Empty;
 
-        //switch parameter: DataController.instance.data.CurrentStage
-        switch (0)
+        switch (DataController.instance.data.CurrentStage)
         {
             case 0:
                 temp = "Stage 1";
