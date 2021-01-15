@@ -203,6 +203,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         yield return new WaitForSeconds(0.8f);
         HUDManager.instance.RespawnBar.SetActive(false);
         bloodScreen.SetRespawn(true);
+        SetHPMax();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -390,6 +391,11 @@ public class PlayerController : MonoSingleton<PlayerController>
     #endregion
 
     #region Set/Change Values(HP, Respawn Count)
+    public void SetHPMax()
+    {
+        stat.HP = stat.MaxHP;
+    }
+
     public void ChangeHP(int _value)
     {
         int temp = 0;

@@ -597,7 +597,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stat:
     HP: 100
-    RespawnCount: 3
+    MaxHP: 0
   cam: {fileID: 1611104143}
   respawn: {fileID: 2072317914}
   state: 0
@@ -3624,6 +3624,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Normal Robot
       objectReference: {fileID: 0}
+    - target: {fileID: 2836004475591695743, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4540682972167239481, guid: f432554f564e69242897607d34218939, type: 3}
       propertyPath: routes.Array.size
       value: 15
@@ -3688,6 +3692,18 @@ PrefabInstance:
       propertyPath: routes.Array.data[14]
       value: 
       objectReference: {fileID: 2034033831}
+    - target: {fileID: 6195328060726154917, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7498398483482779723, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_Speed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7498398483482779723, guid: f432554f564e69242897607d34218939, type: 3}
+      propertyPath: m_AutoBraking
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f432554f564e69242897607d34218939, type: 3}
 --- !u!1 &864698293

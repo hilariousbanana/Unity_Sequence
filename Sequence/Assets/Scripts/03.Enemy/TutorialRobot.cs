@@ -194,9 +194,14 @@ public class TutorialRobot : Enemy
     {
         int temp;
         temp = stat.curHp - _damage;
-        if (temp <= 0)
-            temp = 0;
 
+        if (temp <= 0)
+        {
+            temp = 0;
+            ChangeState(STATE.Died);
+            return;
+        }
+            
         stat.curHp= temp;
         ChangeState(STATE.Damaged);
     }

@@ -7,12 +7,17 @@ using UnityEngine.UI;
 public class NormalRobot : Enemy
 {
     private EnemyData stat;
+
+    #region Nav Mesh Agent Variables
     [SerializeField]
     private Transform[] routes;
     private NavMeshAgent nav;
     private Transform target;
     private Transform playerTransform;
     private SphereCollider collider;
+    #endregion
+
+    #region Effects / Item
     [SerializeField]
     private ParticleSystem Explosion;
     [SerializeField]
@@ -20,17 +25,19 @@ public class NormalRobot : Enemy
     [SerializeField]
     private Transform HPBarPos;
     private RectTransform hpBar;
-
-    private AudioSource audio;
+    public Slider HPBar;
     public ParticleSystem muzzle;
     public GameObject Key;
     public GameObject HealPackA;
     public GameObject HealPackB;
+    #endregion
+
+    private AudioSource audio;
     private Animator anim;
+
     [SerializeField]
     private Transform HeadPos;
 
-    public Slider HPBar;
     private GameObject canvas;
     private Camera camera;
 
@@ -159,10 +166,12 @@ public class NormalRobot : Enemy
                 Died();
                 break;
         }
+        Debug.Log(state);
     }
 
     IEnumerator IdleCoroutine()
     {
+        nav.speed = 0;
         float waitTime = Random.Range(0f, 4f);
         anim.SetBool("Walk", false);
         yield return new WaitForSeconds(waitTime);
@@ -240,7 +249,10 @@ public class NormalRobot : Enemy
         int temp;
         temp = stat.curHp - _damage;
         if (temp <= 0)
+        {
             temp = 0;
+            ChangeState(STATE.Died);
+        }
 
         stat.curHp = temp;
         ChangeState(STATE.Damaged);
@@ -263,26 +275,30 @@ public class NormalRobot : Enemy
     public override void Died()
     {
         //Ragdoll 효과 넣을것. +Drop Item
-        //ChangeState(STATE.Idle);
         nav.speed = 0;
+        anim.SetTrigger("Die");
         Explosion.Play();
-        int drop = Random.Range(0, 11);
-        if (drop * 10 <= stat.ItemDrop)
+        HPBar.value = 0;
+        int drop = Random.Range(0, 101);
+        Debug.Log(drop + " " +stat.ItemDrop);
+        if (drop <= stat.ItemDrop)
         {
             int item = Random.Range(0, (stat.KeyDrop + stat.HealPackADrop + stat.HealPackBDrop) + 1);
             Debug.Log(item);
             if (item <= stat.KeyDrop) // key
             {
+                Debug.Log("Key");
                 Instantiate(Key, ItemDropTransform.position, ItemDropTransform.rotation);
             }
             else if (item <= stat.KeyDrop + stat.HealPackADrop) //HealPackA
             {
+                Debug.Log("HealPack A");
                 Instantiate(HealPackA, ItemDropTransform.position, transform.rotation);
             }
             else //HealPackB
             {
+                Debug.Log("HealPack B");
                 Instantiate(HealPackB, ItemDropTransform.position, transform.rotation);
-
             }
         }
         Destroy(hpBar.gameObject, 1.5f);
