@@ -24,19 +24,22 @@ public class Item : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        switch(type)
+        if(other.gameObject.tag == "Player")
         {
-            case ItemType.Key:
-                //quest.instance.gotkey = true 이런식
-                break;
-            case ItemType.HealPackA:
-                player.ChangeHP(30);
-                break;
-            case ItemType.HealPackB:
-                player.ChangeHP(60);
-                break;
+            switch (type)
+            {
+                case ItemType.Key:
+                    DataController.instance.data.bKey = true;
+                    break;
+                case ItemType.HealPackA:
+                    player.ChangeHP(30);
+                    break;
+                case ItemType.HealPackB:
+                    player.ChangeHP(60);
+                    break;
+            }
+
+            Destroy(gameObject);
         }
-        
-        Destroy(gameObject);
     }
 }

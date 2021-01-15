@@ -6,24 +6,16 @@ using UnityEngine;
 public class Stage
 {
     public GameObject StagePrefab;
-    public Transform RespawnPoint;
     public int StageNum;
 }
 
-public class StageManager : MonoBehaviour
+public class StageManager : MonoSingleton<StageManager>
 {
     public Stage[] Stages;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         CreateStage(DataController.instance.data.CurrentStage);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void CreateStage(int _stageNum)

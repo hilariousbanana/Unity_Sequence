@@ -7,10 +7,10 @@ using UnityEngine.UI;
 public class NormalRobot : Enemy
 {
     private EnemyData stat;
-
+    private InstantiateItem itemSpawner;
     #region Nav Mesh Agent Variables
     [SerializeField]
-    private Transform[] routes;
+    private List<Transform> routes;
     private NavMeshAgent nav;
     private Transform target;
     private Transform playerTransform;
@@ -56,8 +56,10 @@ public class NormalRobot : Enemy
         collider = GetComponent<SphereCollider>();
         anim = GetComponent<Animator>();
         audio = GetComponent<AudioSource>();
+        itemSpawner = GetComponent<InstantiateItem>();
         canvas = GameObject.Find("Canvas");
         hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
+        routes = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().Routes;
         hpBar.gameObject.SetActive(false);
         camera = Camera.main;
     }
@@ -79,7 +81,6 @@ public class NormalRobot : Enemy
             case STATE.Idle:
                 if (!bAction)
                 {
-                    bAction = true;
                     StartCoroutine(IdleCoroutine());
                 }
                 if (bPlayerInRange)
@@ -95,7 +96,6 @@ public class NormalRobot : Enemy
                 }
                 else
                 {
-                    nav.speed = 3.5f;
                     CheckRemainingDistance();
                 }
                 break;
@@ -123,10 +123,6 @@ public class NormalRobot : Enemy
                 if (stat.curHp <= 0)
                 {
                     ChangeState(STATE.Died);
-                }
-                else
-                {
-                    ChangeState(STATE.Idle);
                 }
                 break;
 
@@ -158,7 +154,7 @@ public class NormalRobot : Enemy
                 break;
 
             case STATE.Damaged:
-                StopAllCoroutines();
+                StopCoroutine(HPBarCoroutine());
                 StartCoroutine(HPBarCoroutine());
                 break;
 
@@ -166,24 +162,27 @@ public class NormalRobot : Enemy
                 Died();
                 break;
         }
-        Debug.Log(state);
     }
 
     IEnumerator IdleCoroutine()
     {
+        bAction = true;
+        anim.SetBool("Walk", false);
         nav.speed = 0;
         float waitTime = Random.Range(0f, 4f);
-        anim.SetBool("Walk", false);
         yield return new WaitForSeconds(waitTime);
-        bAction = false;
         ChangeState(STATE.Wander);
     }
 
     public override void Wander()
     {
-        int rand = Random.Range(0, 15);
+        bAction = false;
         anim.SetBool("Walk", true);
+        nav.speed = 3.5f;
+
+        int rand = Random.Range(0, 15);
         target = routes[rand];
+
         nav.SetDestination(target.position);
     }
 
@@ -195,21 +194,22 @@ public class NormalRobot : Enemy
         }
     }
 
-    public override void TracePlayer()
+    public override void TracePlayer() //Player Attack
     {
-        bShot = true;
-        anim.SetTrigger("Shot");
-        Shot();
         nav.speed = 0;
+        Shot();
+       
         Vector3 relativePos = playerTransform.position - transform.position;
         Quaternion rotation = Quaternion.LookRotation(relativePos);
         transform.rotation = rotation;
         StartCoroutine(AttackPlayerCoroutine());
-        //nav.SetDestination(playerTransform.position);
     }
     
     public void Shot()
     {
+        bShot = true;
+        anim.SetTrigger("Shot");
+
         RaycastHit hitInfo;
         if (Physics.Raycast(HeadPos.position, HeadPos.transform.forward * 10, out hitInfo, 10))
         {
@@ -226,7 +226,7 @@ public class NormalRobot : Enemy
 
     IEnumerator AttackPlayerCoroutine()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         bShot = false;
     }
 
@@ -248,10 +248,15 @@ public class NormalRobot : Enemy
     {
         int temp;
         temp = stat.curHp - _damage;
+
         if (temp <= 0)
         {
             temp = 0;
+            stat.curHp = temp;
+
             ChangeState(STATE.Died);
+
+            return;
         }
 
         stat.curHp = temp;
@@ -267,42 +272,50 @@ public class NormalRobot : Enemy
         hpBar.gameObject.SetActive(false);
     }
 
-    public void DamagedAnimation()
+    public void DamagedAnimation() //Right After Damaged Animation(Anim Event)
     {
-        nav.speed = 3.5f;
+        ChangeState(STATE.Idle);
     }
 
     public override void Died()
     {
-        //Ragdoll 효과 넣을것. +Drop Item
+        StopAllCoroutines();
+        //Ragdoll 효과 넣을것.
         nav.speed = 0;
-        anim.SetTrigger("Die");
+        anim.SetBool("Die", true);
         Explosion.Play();
-        HPBar.value = 0;
-        int drop = Random.Range(0, 101);
-        Debug.Log(drop + " " +stat.ItemDrop);
-        if (drop <= stat.ItemDrop)
-        {
-            int item = Random.Range(0, (stat.KeyDrop + stat.HealPackADrop + stat.HealPackBDrop) + 1);
-            Debug.Log(item);
-            if (item <= stat.KeyDrop) // key
-            {
-                Debug.Log("Key");
-                Instantiate(Key, ItemDropTransform.position, ItemDropTransform.rotation);
-            }
-            else if (item <= stat.KeyDrop + stat.HealPackADrop) //HealPackA
-            {
-                Debug.Log("HealPack A");
-                Instantiate(HealPackA, ItemDropTransform.position, transform.rotation);
-            }
-            else //HealPackB
-            {
-                Debug.Log("HealPack B");
-                Instantiate(HealPackB, ItemDropTransform.position, transform.rotation);
-            }
-        }
-        Destroy(hpBar.gameObject, 1.5f);
-        Destroy(this.gameObject, 1.5f);
+
+        itemSpawner.enabled = true;
+
+        //int drop = Random.Range(0, 101);
+
+        //if (drop <= stat.ItemDrop)
+        //{
+        //    Debug.Log("item");
+        //    int item = Random.Range(0, (stat.KeyDrop + stat.HealPackADrop + stat.HealPackBDrop) + 1);
+
+        //    if (item <= stat.KeyDrop) // key
+        //    {
+        //        Instantiate(Key, ItemDropTransform.position, ItemDropTransform.rotation);
+        //    }
+        //    else if (item <= stat.KeyDrop + stat.HealPackADrop) //HealPackA
+        //    {
+        //        Instantiate(HealPackA, ItemDropTransform.position, transform.rotation);
+        //    }
+        //    else //HealPackB
+        //    {
+        //        Instantiate(HealPackB, ItemDropTransform.position, transform.rotation);
+        //    }
+        //}
+
+        StartCoroutine(DieTimer());
+    }
+
+    IEnumerator DieTimer()
+    {
+        yield return new WaitForSeconds(2f);
+        Destroy(hpBar.gameObject);
+        Destroy(this.gameObject);
     }
 
     #region SetValues(PlayerInRange, PlayerTransform)

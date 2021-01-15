@@ -8,9 +8,8 @@ public class PlayerController : MonoSingleton<PlayerController>
     private PlayerStat stat;
     [SerializeField]
     private Camera cam;
-    [SerializeField]
-    private Transform respawn;//조만간 삭제예정
-    
+    private Transform respawn;
+
     public enum STATE
     {
         Idle,
@@ -21,7 +20,6 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     public STATE state = STATE.Idle;
 
-    //Variables
     #region GetComponents(Rigidbody, Collider, Crosshair)
     private Rigidbody rigidBody;
     private CapsuleCollider collider;
@@ -71,10 +69,12 @@ public class PlayerController : MonoSingleton<PlayerController>
         rigidBody = GetComponent<Rigidbody>();
         crosshair = FindObjectOfType<CrosshairController>();
         collider = GetComponent<CapsuleCollider>();
+        respawn = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().RespawnPoint;
 
         applySpeed = walkSpeed;
         originPosY = cam.transform.localPosition.y;
         applyPosY = originPosY;
+        this.transform.position = respawn.position;
     }
 
     // Update is called once per frame

@@ -7,8 +7,7 @@ using UnityEngine.UI;
 public class TutorialRobot : Enemy
 {
     private EnemyData stat;
-    [SerializeField]
-    private Transform[] routes;
+    private List<Transform> routes;
     private NavMeshAgent nav;
     private Transform target;
     private Transform playerTransform;
@@ -48,6 +47,7 @@ public class TutorialRobot : Enemy
         canvas = GameObject.Find("Canvas");
         hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
         BeCareful = GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(3).GetComponent<AlertScreenController>();
+        routes = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().Routes;
         hpBar.gameObject.SetActive(false);
         camera = Camera.main;
     }
@@ -220,11 +220,12 @@ public class TutorialRobot : Enemy
         nav.speed = 0;
         animation.Stop();
         Explosion.Play();
-        int drop = Random.Range(0, 11);
-        if (drop * 10 <= stat.ItemDrop)
+        int drop = Random.Range(0, 101);
+
+        if (drop <= stat.ItemDrop)
         {
             int item = Random.Range(0, (stat.KeyDrop + stat.HealPackADrop + stat.HealPackBDrop) + 1);
-            Debug.Log(item);
+
             if (item <= stat.KeyDrop) // key
             {
                 Instantiate(Key, ItemDropTransform.position, ItemDropTransform.rotation);
@@ -239,6 +240,7 @@ public class TutorialRobot : Enemy
 
             }
         }
+        BeCareful.SetTrace(false);
         Destroy(hpBar.gameObject, 1.5f);
         Destroy(this.gameObject, 1.5f);
     }
