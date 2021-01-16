@@ -60,8 +60,8 @@ public class EnemySpawner : MonoBehaviour
         
         yield return new WaitForSeconds(0.8f);
 
-        int rand1 = Random.Range(0, (enemyTypes.Count + 1));
-        int rand2 = Random.Range(0, (spawnPoints.Count + 1));
+        int rand1 = Random.Range(0, enemyTypes.Count);
+        int rand2 = Random.Range(0, spawnPoints.Count);
 
         Instantiate(enemyTypes[rand1], spawnPoints[rand2].position, spawnPoints[rand2].rotation);
 

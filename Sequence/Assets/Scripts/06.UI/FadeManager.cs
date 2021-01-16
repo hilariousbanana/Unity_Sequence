@@ -5,24 +5,17 @@ using UnityEngine.UI;
 
 public class FadeManager : MonoBehaviour
 {
-    public GameObject canvas;
+    public GameObject imgBox;
     private Image img;
     bool playFlag = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        img = GetComponent<Image>();
-        StartCoroutine(FadeInOutCoroutine());
+        img = imgBox.GetComponentInChildren<Image>();
+        StartCoroutine(FadeOut());
     }
 
-    private void Update()
-    {
-        if(playFlag == false)
-        {
-            StartCoroutine(FadeInOutCoroutine());
-        }
-    }
     IEnumerator FadeInOutCoroutine()
     {
         playFlag = true;
@@ -42,7 +35,24 @@ public class FadeManager : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
         }
         playFlag = false;
-        canvas.SetActive(false);
+        imgBox.SetActive(false);
+        yield return null;
+    }
+
+    IEnumerator FadeOut()
+    {
+        imgBox.SetActive(true);
+        Color col = img.color;
+        
+        while (col.a >= 0)
+        {
+            col.a -= 0.01f;
+            img.color = col;
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        imgBox.SetActive(false);
+
         yield return null;
     }
 }
