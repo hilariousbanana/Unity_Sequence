@@ -30,6 +30,8 @@ public class TutorialRobot : Enemy
     private Camera camera;
 
     private AlertScreenController BeCareful;
+    private DialogueManager dial;
+    private EnemySpawner spawner;
 
     STATE state = STATE.Idle;
 
@@ -50,12 +52,14 @@ public class TutorialRobot : Enemy
         routes = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().Routes;
         hpBar.gameObject.SetActive(false);
         camera = FindObjectOfType<PlayerController>().GetComponentInChildren<Camera>();
+        dial = FindObjectOfType<DialogueManager>();
+        spawner = FindObjectOfType<EnemySpawner>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(DialogueManager.instance.bDialEnd)
+        if(dial.bDialEnd)
         {
             CheckPlayerInRange();
             EnemyState();
@@ -245,6 +249,7 @@ public class TutorialRobot : Enemy
         }
         BeCareful.SetTrace(false);
         DataController.instance.data.CurrentKillCount++;
+        spawner.CurInstance--;
         Destroy(hpBar.gameObject, 1.5f);
         Destroy(this.gameObject, 1.5f);
     }

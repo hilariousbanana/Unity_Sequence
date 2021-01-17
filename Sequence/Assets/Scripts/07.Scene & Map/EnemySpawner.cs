@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
     private List<Transform> spawnPoints;
     private List<GameObject> enemyTypes;
 
-    private int CurInstance = 0;
+    public int CurInstance = 0;
     private int MaxInstance;
 
     private bool bInstantiating = false;

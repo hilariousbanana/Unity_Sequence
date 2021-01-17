@@ -82,10 +82,6 @@ public class QuestManager : MonoBehaviour
         {
             data.bFailed = true;
         }
-        if (data.CurrentRespawnCount > data.MaxRespawnCount)
-        {
-            data.bFailed = true;
-        }
         if (data.CurrentCaughtCount > data.MaxCaughtCount)
         {
             data.bFailed = true;
@@ -106,7 +102,7 @@ public class QuestManager : MonoBehaviour
 
     void GetKeyQuest(int index)
     {
-        if (data.bKey)
+        if (data.HaveKey)
         {
             CurrentQuest[index].text = "Succeeded";
         }
@@ -147,7 +143,7 @@ public class QuestManager : MonoBehaviour
     #region Check Quest Clear
     bool DestroyedRobot()
     {
-        if (data.CurrentKillCount == data.MaxKillCount)
+        if (data.CurrentKillCount >= data.MaxKillCount)
             return true;
         return false;
     }

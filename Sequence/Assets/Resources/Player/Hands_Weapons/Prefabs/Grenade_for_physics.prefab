@@ -129,7 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   delay: 2.5
   ExplosionEffect: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664, type: 3}
-  radius: 4
+  radius: 10
 --- !u!1 &1937056721745020
 GameObject:
   m_ObjectHideFlags: 0

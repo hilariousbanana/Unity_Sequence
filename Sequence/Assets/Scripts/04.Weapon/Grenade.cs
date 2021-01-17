@@ -39,7 +39,7 @@ public class Grenade : MonoBehaviour
         {
             if(nearbyObject.gameObject.tag == "Enemy")
             {
-                nearbyObject.gameObject.GetComponent<Enemy>().Damaged(-50);
+                nearbyObject.gameObject.GetComponent<Enemy>().Damaged(100);
             }
         }
 

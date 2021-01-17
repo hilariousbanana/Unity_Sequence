@@ -48,6 +48,9 @@ public class NormalRobot : Enemy
     public bool bPlayerInRange;
     public bool bShot;
 
+    private DialogueManager dial;
+    private EnemySpawner spawner;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,16 +61,18 @@ public class NormalRobot : Enemy
         audio = GetComponent<AudioSource>();
         itemSpawner = GetComponent<InstantiateItem>();
         canvas = GameObject.Find("Canvas");
+        dial = FindObjectOfType<DialogueManager>();
         hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
         routes = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().Routes;
         hpBar.gameObject.SetActive(false);
         camera = Camera.main;
+        spawner = FindObjectOfType<EnemySpawner>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(DialogueManager.instance.bDialEnd)
+        if(dial.bDialEnd)
         {
             CheckPlayerInRange();
             EnemyState();
@@ -290,26 +295,6 @@ public class NormalRobot : Enemy
 
         itemSpawner.enabled = true;
 
-        //int drop = Random.Range(0, 101);
-
-        //if (drop <= stat.ItemDrop)
-        //{
-        //    Debug.Log("item");
-        //    int item = Random.Range(0, (stat.KeyDrop + stat.HealPackADrop + stat.HealPackBDrop) + 1);
-
-        //    if (item <= stat.KeyDrop) // key
-        //    {
-        //        Instantiate(Key, ItemDropTransform.position, ItemDropTransform.rotation);
-        //    }
-        //    else if (item <= stat.KeyDrop + stat.HealPackADrop) //HealPackA
-        //    {
-        //        Instantiate(HealPackA, ItemDropTransform.position, transform.rotation);
-        //    }
-        //    else //HealPackB
-        //    {
-        //        Instantiate(HealPackB, ItemDropTransform.position, transform.rotation);
-        //    }
-        //}
         DataController.instance.data.CurrentKillCount++;
 
         StartCoroutine(DieTimer());
@@ -318,6 +303,7 @@ public class NormalRobot : Enemy
     IEnumerator DieTimer()
     {
         yield return new WaitForSeconds(2f);
+        spawner.CurInstance--;
         Destroy(hpBar.gameObject);
         Destroy(this.gameObject);
     }

@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoSingleton<PlayerController>
+public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     private PlayerStat stat;
     [SerializeField]
     private Camera cam;
     private Transform respawn;
+    public GameObject RespawnBar;
 
     public enum STATE
     {
         Idle,
         Damaged,
-        Died, 
+        Died,
         Respawned
     }
 
@@ -24,7 +25,8 @@ public class PlayerController : MonoSingleton<PlayerController>
     private Rigidbody rigidBody;
     private CapsuleCollider collider;
     private CrosshairController crosshair;
-    public AlertScreenController bloodScreen;
+    public GameObject bloodScreen;
+    private DialogueManager dial;
     #endregion
 
     #region Movement Variables(Walk, Run, Crouch) - Floats
@@ -70,7 +72,8 @@ public class PlayerController : MonoSingleton<PlayerController>
         crosshair = FindObjectOfType<CrosshairController>();
         collider = GetComponent<CapsuleCollider>();
         respawn = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().RespawnPoint;
-
+        dial = FindObjectOfType<DialogueManager>();
+        ;
         applySpeed = walkSpeed;
         originPosY = cam.transform.localPosition.y;
         applyPosY = originPosY;
@@ -80,7 +83,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     // Update is called once per frame
     void Update()
     {
-        if(DialogueManager.instance.bDialEnd)
+        if (dial.bDialEnd)
         {
             IsOnGround();
             TryJump();
@@ -96,17 +99,17 @@ public class PlayerController : MonoSingleton<PlayerController>
     #region Player FSM
     void PlayerStateMachine()
     {
-        switch(state)
+        switch (state)
         {
             case STATE.Idle:
-                if(IsDamaged())
+                if (IsDamaged())
                 {
                     ChangePlayerState(STATE.Damaged);
                 }
                 break;
 
             case STATE.Damaged:
-                if(IsDied())
+                if (IsDied())
                 {
                     ChangePlayerState(STATE.Died);
                 }
@@ -117,14 +120,9 @@ public class PlayerController : MonoSingleton<PlayerController>
                 break;
 
             case STATE.Died:
-                if(DataController.instance.data.CurrentRespawnCount > 0)
-                {
-                    ChangePlayerState(STATE.Respawned);
-                }
-                else
-                {
-                    //게임오버 //스테이지 다시시작?
-                }
+
+                ChangePlayerState(STATE.Respawned);
+
                 break;
 
             case STATE.Respawned:
@@ -156,7 +154,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
             case STATE.Respawned:
                 Respawn();
-                DataController.instance.data.CurrentRespawnCount--;
+                DataController.instance.data.CurrentRespawnCount++;
                 state = STATE.Respawned;
                 break;
             default:
@@ -172,14 +170,14 @@ public class PlayerController : MonoSingleton<PlayerController>
     void Damaged()
     {
         Debug.Log("Damaged.");
-        bloodScreen.DamagedAnim();
+        bloodScreen.GetComponent<AlertScreenController>().DamagedAnim();
         bDamaged = false;
-        
+
     }
 
     private bool IsDied()
     {
-        if(stat.HP > 0)
+        if (stat.HP > 0)
         {
             return false;
         }
@@ -189,7 +187,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     void Died()
     {
-        bloodScreen.DiedAnim();
+        bloodScreen.GetComponent<AlertScreenController>().DiedAnim();
     }
 
     private void Respawn()
@@ -199,19 +197,20 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     IEnumerator RespawnCoroutine()
     {
-        bloodScreen.SetRespawn(false);
-        bloodScreen.DiedAnim();
-        transform.position = respawn.position;
-        HUDManager.instance.RespawnBar.SetActive(true);
+        Debug.Log("Respawn Coroutine");
+        bloodScreen.GetComponent<AlertScreenController>().SetRespawn(false);
+        bloodScreen.GetComponent<AlertScreenController>().DiedAnim();
+        RespawnBar.SetActive(true);
         yield return new WaitForSeconds(0.8f);
-        HUDManager.instance.RespawnBar.SetActive(false);
-        bloodScreen.SetRespawn(true);
+        transform.position = respawn.position;
+        RespawnBar.SetActive(false);
+        bloodScreen.GetComponent<AlertScreenController>().SetRespawn(true);
         SetHPMax();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy")
         {
             bDamaged = true;
             ChangeHP(-30);
@@ -223,7 +222,7 @@ public class PlayerController : MonoSingleton<PlayerController>
     private void IsOnGround()
     {
         bOnGround = Physics.Raycast(transform.position, Vector3.down, collider.bounds.extents.y);
-        crosshair.RunAnim(!bOnGround); 
+        crosshair.RunAnim(!bOnGround);
     }
 
     private void TryJump()
@@ -402,13 +401,13 @@ public class PlayerController : MonoSingleton<PlayerController>
     public void ChangeHP(int _value)
     {
         int temp = 0;
-        temp = stat.HP +_value;
+        temp = stat.HP + _value;
 
-        if(temp >= 100)
+        if (temp >= 100)
         {
             temp = 100;
         }
-        else if(temp <= 0)
+        else if (temp <= 0)
         {
             temp = 0;
         }

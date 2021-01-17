@@ -43,7 +43,14 @@ public class FadeManager : MonoBehaviour
     {
         imgBox.SetActive(true);
         Color col = img.color;
-        
+
+
+        while (col.a <= 1)
+        {
+            col.a += 0.01f;
+            img.color = col;
+            yield return new WaitForSeconds(0.01f);
+        }
         while (col.a >= 0)
         {
             col.a -= 0.01f;

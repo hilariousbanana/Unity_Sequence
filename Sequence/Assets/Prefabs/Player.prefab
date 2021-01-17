@@ -521,6 +521,7 @@ MonoBehaviour:
     HP: 100
     MaxHP: 0
   cam: {fileID: 7089775656971079745}
+  RespawnBar: {fileID: 0}
   state: 0
   bloodScreen: {fileID: 0}
   walkSpeed: 0.1
@@ -1798,6 +1799,10 @@ PrefabInstance:
     - target: {fileID: 4977766527893736, guid: b7b5e0f1cb12a2d4a879f401a4992cd9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 21.984283
+      objectReference: {fileID: 0}
+    - target: {fileID: 4355124195291485814, guid: b7b5e0f1cb12a2d4a879f401a4992cd9, type: 3}
+      propertyPath: Range
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4355124195291485814, guid: b7b5e0f1cb12a2d4a879f401a4992cd9, type: 3}
       propertyPath: Muzzle

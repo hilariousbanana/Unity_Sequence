@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoSingleton<GameManager>
+public class GameManager : MonoBehaviour
 {
     enum GAMESTATE
     {
@@ -16,6 +16,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     private Data data;
     GAMESTATE gState = GAMESTATE.Title;
+    public GameObject ResultBox;
     public GameObject GameOverPanel;
     public GameObject ClearPanel;
 
@@ -83,6 +84,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     void Clear()
     {
+        data.bSucceed = false;
         data.CurrentStage++;
         data.UpdateVariables(data.CurrentStage);
         StartCoroutine(ClearCoroutine());
@@ -90,8 +92,10 @@ public class GameManager : MonoSingleton<GameManager>
 
     IEnumerator ClearCoroutine()
     {
-        yield return new WaitForSeconds(1f);
+        ResultBox.GetComponent<Animator>().SetBool("Clear", true);
+        ClearPanel.SetActive(true);
 
+        yield return new WaitForSeconds(2f);
 
         LoadingSceneManager.LoadScene(1);
 
@@ -100,16 +104,20 @@ public class GameManager : MonoSingleton<GameManager>
 
     void GameOver()
     {
+        data.bFailed = false;
         data.UpdateVariables(data.CurrentStage);
+        StartCoroutine(GameOverCoroutine());
     }
 
     IEnumerator GameOverCoroutine()
     {
-        yield return new WaitForSeconds(1f);
+        ResultBox.GetComponent<Animator>().SetBool("GameOver", true);
+        GameOverPanel.SetActive(true);
 
+        yield return new WaitForSeconds(2f);
 
         LoadingSceneManager.LoadScene(1);
-
+        
         ChangeState(GAMESTATE.Entry);
     }
 }

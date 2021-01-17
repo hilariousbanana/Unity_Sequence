@@ -29,12 +29,14 @@ public class Item : MonoBehaviour
             switch (type)
             {
                 case ItemType.Key:
-                    DataController.instance.data.bKey = true;
+                    DataController.instance.data.HaveKey = true;
                     break;
                 case ItemType.HealPackA:
+                    DataController.instance.data.CurrentPotionCount++;
                     player.ChangeHP(30);
                     break;
                 case ItemType.HealPackB:
+                    DataController.instance.data.CurrentPotionCount++;
                     player.ChangeHP(60);
                     break;
             }

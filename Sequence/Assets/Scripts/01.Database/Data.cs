@@ -29,8 +29,8 @@ public class Data
 
     public void AddQuestList()
     {
-        QuestList.Add(new Quest(Quest.STAGE.Stage1, 10, 0, 0, 0, true, false));
-        QuestList.Add(new Quest(Quest.STAGE.Stage2, 10, 5, 0, 0, true, false));
+        QuestList.Add(new Quest(Quest.STAGE.Stage1, 10, 100, 0, 100, true, false));
+        QuestList.Add(new Quest(Quest.STAGE.Stage2, 10, 5, 0, 100, true, false));
         QuestList.Add(new Quest(Quest.STAGE.Stage3, 0, 3, 3, 3, true, false));
         QuestList.Add(new Quest(Quest.STAGE.Final, 20, 0, 0, 0));
     }
@@ -97,10 +97,10 @@ public class Data
         MaxKillCount = QuestList[stage].KillCount;
         MaxRespawnCount = QuestList[stage].RespawnCount;
         MaxPotionCount = QuestList[stage].PotionCount;
-        HaveKey = QuestList[stage].bHaveKey;
-        BossKilled = QuestList[stage].bBossKilled;
+        bKey = QuestList[stage].bHaveKey;
+        bBoss = QuestList[stage].bBossKilled;
 
-        bKey = false;
-        bBoss = false;
+        HaveKey = false;
+        BossKilled = false;
     }
 }

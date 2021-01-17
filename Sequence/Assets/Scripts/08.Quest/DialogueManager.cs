@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueManager : MonoSingleton<DialogueManager>
+public class DialogueManager : MonoBehaviour
 {
     public Dialogue DialogueList;
 
@@ -24,10 +24,20 @@ public class DialogueManager : MonoSingleton<DialogueManager>
     void Start()
     {
         bNext = true;
+        bDialEnd = false;
         InitializeDialogue();
         DialogueBox.SetActive(true);
 
-        CurrentDial = DataController.instance.data.CurrentStage;
+        if(DataController.instance.data.CurrentStage == 0)
+            CurrentDial = 0;
+        else if(DataController.instance.data.bFailed)
+        {
+            CurrentDial = 2;
+        }
+        else
+        {
+            CurrentDial = 1;
+        }
     }
 
     // Update is called once per frame
@@ -50,15 +60,31 @@ public class DialogueManager : MonoSingleton<DialogueManager>
             "This is the end of the introduction to our project. \n Good Luck."
         }
         );
+
+        DialogueList.AddDialogue(Dialogue.DialogueType.Succeed, new string[]
+        {
+            "You finally did it !",
+            "Next mission would be harder than last stage.",
+            "Be Prepared. \n There's no time to hesitate. \n Move faster."
+        }
+        );
+
+        DialogueList.AddDialogue(Dialogue.DialogueType.Fail, new string[]
+       {
+            "You failed the mission.",
+            "So we re-created the stage for you.",
+            "This will be last chance. \n Good Luck, my friend."
+       }
+       );
     }
 
     public void ToNextIndex()
     {
-        if(CurrentIndex + 1 == DialogueList.Dialogues[CurrentDial].Length - 1)
-        { 
+        if(CurrentIndex == DialogueList.Dialogues[CurrentDial].Length - 1)
+        {
             //CurrentDial++;
             //CurrentIndex = 0;
-
+            QuestBox.SetActive(true);
             BtnNext.SetActive(false);
             BtnOk.SetActive(true);
         }
@@ -97,6 +123,7 @@ public class DialogueManager : MonoSingleton<DialogueManager>
 
         yield return null;
     }
+
     IEnumerator Timer(float time)
     {
         yield return new WaitForSeconds(time);

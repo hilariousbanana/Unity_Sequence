@@ -9,19 +9,21 @@ public class Stage
     public int StageNum;
 }
 
-public class StageManager : MonoSingleton<StageManager>
+public class StageManager : MonoBehaviour
 {
     public Stage[] Stages;
     public GameObject Crosshair;
+    private DialogueManager dial;
 
     private void Awake()
     {
         CreateStage(DataController.instance.data.CurrentStage);
+        dial = FindObjectOfType<DialogueManager>();
     }
 
     private void Update()
     {
-        if(DialogueManager.instance.bDialEnd)
+        if(dial.bDialEnd)
         {
             Crosshair.SetActive(true);
         }

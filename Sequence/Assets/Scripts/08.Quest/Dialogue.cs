@@ -8,10 +8,8 @@ public class Dialogue
     public enum DialogueType
     {
         Entry,
-        Quest,
         Succeed,
-        Fail,
-        Reset
+        Fail
     }
 
     public DialogueType type;

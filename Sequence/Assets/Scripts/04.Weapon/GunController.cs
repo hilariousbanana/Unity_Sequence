@@ -36,6 +36,7 @@ public class GunController : MonoSingleton<GunController>
     [SerializeField]
     private GameObject weaponCamera;
     private CrosshairController crosshair;
+    private PlayerController playerController;
     public float ScopeFOV;
     private float normalFOV = 60f;
 
@@ -47,10 +48,14 @@ public class GunController : MonoSingleton<GunController>
     public float throwAngle = 45.0f;
     public float gravity = 9.8f;
 
+    private DialogueManager dial;
+
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
         crosshair = FindObjectOfType<CrosshairController>();
+        dial = FindObjectOfType<DialogueManager>();
+        playerController = FindObjectOfType<PlayerController>();
         recoilBack = new Vector3(originPos[curWeapon.WeaponNum].x, originPos[curWeapon.WeaponNum].y, curWeapon.RetroActionForce);
         retroActionRecoilBack = new Vector3(curWeapon.FineSightOriginPos.x, curWeapon.FineSightOriginPos.y, curWeapon.RetroActionFineSightForce);
 
@@ -59,7 +64,7 @@ public class GunController : MonoSingleton<GunController>
     }
     private void Update()
     {
-        if(DialogueManager.instance.bDialEnd)
+        if(dial.bDialEnd)
         {
             GunFireRateCalculate();
             TryWalk();
@@ -81,13 +86,13 @@ public class GunController : MonoSingleton<GunController>
 
     private void TryWalk()
     {
-        curWeapon.Anim.SetBool("Walk", PlayerController.instance.GetPlayerWalk());
+        curWeapon.Anim.SetBool("Walk", playerController.GetPlayerWalk());
     }
 
     private void TryRun()
     {
-        curWeapon.Anim.SetBool("Run", PlayerController.instance.GetPlayerRun());
-        if(PlayerController.instance.GetPlayerRun())
+        curWeapon.Anim.SetBool("Run", playerController.GetPlayerRun());
+        if(playerController.GetPlayerRun())
         {
             CancelFineSight();
         }
