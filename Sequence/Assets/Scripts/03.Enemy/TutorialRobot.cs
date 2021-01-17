@@ -49,18 +49,21 @@ public class TutorialRobot : Enemy
         BeCareful = GameObject.Find("Canvas").transform.GetChild(1).transform.GetChild(3).GetComponent<AlertScreenController>();
         routes = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().Routes;
         hpBar.gameObject.SetActive(false);
-        camera = Camera.main;
+        camera = FindObjectOfType<PlayerController>().GetComponentInChildren<Camera>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckPlayerInRange();
-        EnemyState();
+        if(DialogueManager.instance.bDialEnd)
+        {
+            CheckPlayerInRange();
+            EnemyState();
 
-        Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
-        hpBar.position = _hpPos;
-        hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
+            Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
+            hpBar.position = _hpPos;
+            hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
+        }
     }
 
     public override void EnemyState()
@@ -241,6 +244,7 @@ public class TutorialRobot : Enemy
             }
         }
         BeCareful.SetTrace(false);
+        DataController.instance.data.CurrentKillCount++;
         Destroy(hpBar.gameObject, 1.5f);
         Destroy(this.gameObject, 1.5f);
     }

@@ -59,13 +59,16 @@ public class GunController : MonoSingleton<GunController>
     }
     private void Update()
     {
-        GunFireRateCalculate();
-        TryWalk();
-        TryRun();
-        TryFire();
-        TryReload();
-        TryPlaySound();
-        TryFineSight();
+        if(DialogueManager.instance.bDialEnd)
+        {
+            GunFireRateCalculate();
+            TryWalk();
+            TryRun();
+            TryFire();
+            TryReload();
+            TryPlaySound();
+            TryFineSight();
+        }
     }
 
     private void GunFireRateCalculate()

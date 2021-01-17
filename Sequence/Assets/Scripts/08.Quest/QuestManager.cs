@@ -21,11 +21,15 @@ public class QuestManager : MonoBehaviour
     private void Update()
     {
         InitNumber(data.CurrentStage);
+        CheckSucceeded();
+        CheckFailed();
     }
 
+
+    #region Initialization
     void InitText()
     {
-        for(int i = 0; i < data.QuestList[data.CurrentStage].TextList.Count; i++)
+        for (int i = 0; i < data.QuestList[data.CurrentStage].TextList.Count; i++)
         {
             QuestDescription[i].text = data.QuestList[data.CurrentStage].TextList[i];
         }
@@ -33,7 +37,7 @@ public class QuestManager : MonoBehaviour
 
     void InitNumber(int stage)
     {
-        switch(stage)
+        switch (stage)
         {
             case 0:
                 DestroyQuest(0);
@@ -59,6 +63,42 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+
+    #endregion
+
+
+    #region Check Stage State(Clear / Fail)
+    void CheckSucceeded()
+    {
+        if (DestroyedRobot() && GotKey() && RespawnedProperly() && CaughtProperly() && GotPotionProperly() && KilledBoss())
+        {
+            data.bSucceed = true;
+        }
+    }
+
+    void CheckFailed()
+    {
+        if (data.CurrentRespawnCount > data.MaxRespawnCount)
+        {
+            data.bFailed = true;
+        }
+        if (data.CurrentRespawnCount > data.MaxRespawnCount)
+        {
+            data.bFailed = true;
+        }
+        if (data.CurrentCaughtCount > data.MaxCaughtCount)
+        {
+            data.bFailed = true;
+        }
+        if (data.CurrentPotionCount > data.MaxPotionCount)
+        {
+            data.bFailed = true;
+        }
+    }
+
+    #endregion
+
+    #region Quests
     void DestroyQuest(int index)
     {
         CurrentQuest[index].text = $"{data.CurrentKillCount} / {data.MaxKillCount}";
@@ -102,4 +142,50 @@ public class QuestManager : MonoBehaviour
             CurrentQuest[index].text = "Proceeding";
         }
     }
+    #endregion
+
+    #region Check Quest Clear
+    bool DestroyedRobot()
+    {
+        if (data.CurrentKillCount == data.MaxKillCount)
+            return true;
+        return false;
+    }
+
+    bool GotKey()
+    {
+        if (data.HaveKey == data.bKey)
+            return true;
+        return false;
+    }
+
+    bool RespawnedProperly()
+    {
+        if (data.CurrentRespawnCount <= data.MaxRespawnCount)
+            return true;
+        return false;
+    }
+
+    bool CaughtProperly()
+    {
+        if (data.CurrentCaughtCount<= data.MaxCaughtCount)
+            return true;
+        return false;
+    }
+
+    bool GotPotionProperly()
+    {
+        if (data.CurrentPotionCount <= data.MaxPotionCount)
+            return true;
+        return false;
+    }
+
+    bool KilledBoss()
+    {
+        if (data.BossKilled == data.bBoss)
+            return true;
+        return false;
+    }
+
+    #endregion
 }

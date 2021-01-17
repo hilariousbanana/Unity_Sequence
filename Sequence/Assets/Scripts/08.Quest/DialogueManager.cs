@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DialogueManager : MonoBehaviour
+public class DialogueManager : MonoSingleton<DialogueManager>
 {
     public Dialogue DialogueList;
 
@@ -18,6 +18,7 @@ public class DialogueManager : MonoBehaviour
     public Animator anim_window;
 
     public bool bNext;
+    public bool bDialEnd;
 
     // Start is called before the first frame update
     void Start()
@@ -53,13 +54,17 @@ public class DialogueManager : MonoBehaviour
 
     public void ToNextIndex()
     {
-        if(CurrentIndex == DialogueList.Dialogues[CurrentDial].Length - 1)
-        {
+        if(CurrentIndex + 1 == DialogueList.Dialogues[CurrentDial].Length - 1)
+        { 
+            //CurrentDial++;
+            //CurrentIndex = 0;
+
             BtnNext.SetActive(false);
             BtnOk.SetActive(true);
         }
         else if(bNext)
         {
+            bDialEnd = false;
             StartCoroutine(IndexChangeEffect());
         }
 
@@ -71,7 +76,7 @@ public class DialogueManager : MonoBehaviour
         bNext = false;
 
         Color col = text.color;
-        
+
         while (col.a >= 0)
         {
             col.a -= 0.025f;
@@ -87,7 +92,7 @@ public class DialogueManager : MonoBehaviour
             text.color = col;
             yield return new WaitForSeconds(0.01f);
         }
-
+        
         bNext = true;
 
         yield return null;
@@ -95,6 +100,7 @@ public class DialogueManager : MonoBehaviour
     IEnumerator Timer(float time)
     {
         yield return new WaitForSeconds(time);
+        bDialEnd = true;
         DialogueBox.SetActive(false);
     }
 

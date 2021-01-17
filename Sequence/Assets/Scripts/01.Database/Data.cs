@@ -19,10 +19,13 @@ public class Data
     public int MaxPotionCount;
     public int MaxCaughtCount;
 
-    public bool bKey = false;
-    public bool bBoss = false;
-    public bool HaveKey = false;
-    public bool BossKilled = false;
+    public bool bKey = false; //퀘스트 기준
+    public bool bBoss = false; //퀘스트 기준
+    public bool HaveKey = false; //현재 캐릭터
+    public bool BossKilled = false; //현재 캐릭터
+
+    public bool bSucceed = false;
+    public bool bFailed = false;
 
     public void AddQuestList()
     {
@@ -52,7 +55,7 @@ public class Data
         "Destroy Tutorial Robots.",
         "Respawn 3 Times or Less.",
         "Don't Get Caught 3 Times or Less.",
-        "Take the Heal Pack 3 Times or More.",
+        "Take the Heal Pack 3 Times or Less.",
         "Find the Key."
         }
         );
@@ -80,21 +83,24 @@ public class Data
         MaxRespawnCount = QuestList[0].RespawnCount;
         MaxPotionCount = QuestList[0].PotionCount;
         MaxCaughtCount = QuestList[0].CaughtCount;
-        HaveKey = QuestList[0].bHaveKey;
-        BossKilled = QuestList[0].bBossKilled;
+        bKey = QuestList[0].bHaveKey;
+        bBoss = QuestList[0].bBossKilled;
     }
 
     public void UpdateVariables(int stage)
     {
-        CurrentStage = 0;
+        CurrentStage = stage;
         CurrentKillCount = 0;
         CurrentRespawnCount = 0;
         CurrentPotionCount = 0;
 
-        MaxKillCount = QuestList[0].KillCount;
-        MaxRespawnCount = QuestList[0].RespawnCount;
-        MaxPotionCount = QuestList[0].PotionCount;
-        HaveKey = QuestList[0].bHaveKey;
-        BossKilled = QuestList[0].bBossKilled;
+        MaxKillCount = QuestList[stage].KillCount;
+        MaxRespawnCount = QuestList[stage].RespawnCount;
+        MaxPotionCount = QuestList[stage].PotionCount;
+        HaveKey = QuestList[stage].bHaveKey;
+        BossKilled = QuestList[stage].bBossKilled;
+
+        bKey = false;
+        bBoss = false;
     }
 }

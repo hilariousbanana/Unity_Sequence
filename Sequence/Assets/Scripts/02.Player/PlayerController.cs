@@ -80,14 +80,17 @@ public class PlayerController : MonoSingleton<PlayerController>
     // Update is called once per frame
     void Update()
     {
-        IsOnGround();
-        TryJump();
-        TryRun();
-        TryCrouch();
-        Move();
-        CameraRotation();
-        PlayerRotation();
-        PlayerStateMachine();
+        if(DialogueManager.instance.bDialEnd)
+        {
+            IsOnGround();
+            TryJump();
+            TryRun();
+            TryCrouch();
+            Move();
+            CameraRotation();
+            PlayerRotation();
+            PlayerStateMachine();
+        }
     }
 
     #region Player FSM

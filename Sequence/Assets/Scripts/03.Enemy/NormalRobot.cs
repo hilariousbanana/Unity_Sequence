@@ -67,11 +67,14 @@ public class NormalRobot : Enemy
     // Update is called once per frame
     void Update()
     {
-        CheckPlayerInRange();
-        EnemyState();
-        Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
-        hpBar.position = _hpPos;
-        hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
+        if(DialogueManager.instance.bDialEnd)
+        {
+            CheckPlayerInRange();
+            EnemyState();
+            Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
+            hpBar.position = _hpPos;
+            hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
+        }
     }
 
     public override void EnemyState()
@@ -307,6 +310,7 @@ public class NormalRobot : Enemy
         //        Instantiate(HealPackB, ItemDropTransform.position, transform.rotation);
         //    }
         //}
+        DataController.instance.data.CurrentKillCount++;
 
         StartCoroutine(DieTimer());
     }

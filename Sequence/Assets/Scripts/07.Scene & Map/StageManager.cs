@@ -12,10 +12,19 @@ public class Stage
 public class StageManager : MonoSingleton<StageManager>
 {
     public Stage[] Stages;
+    public GameObject Crosshair;
 
-    private void Start()
+    private void Awake()
     {
         CreateStage(DataController.instance.data.CurrentStage);
+    }
+
+    private void Update()
+    {
+        if(DialogueManager.instance.bDialEnd)
+        {
+            Crosshair.SetActive(true);
+        }
     }
 
     void CreateStage(int _stageNum)
