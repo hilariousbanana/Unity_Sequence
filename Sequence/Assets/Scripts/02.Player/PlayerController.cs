@@ -73,7 +73,6 @@ public class PlayerController : MonoBehaviour
         collider = GetComponent<CapsuleCollider>();
         respawn = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().RespawnPoint;
         dial = FindObjectOfType<DialogueManager>();
-        ;
         applySpeed = walkSpeed;
         originPosY = cam.transform.localPosition.y;
         applyPosY = originPosY;

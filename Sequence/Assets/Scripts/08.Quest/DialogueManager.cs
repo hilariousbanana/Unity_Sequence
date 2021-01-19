@@ -33,10 +33,12 @@ public class DialogueManager : MonoBehaviour
         else if(DataController.instance.data.bFailed)
         {
             CurrentDial = 2;
+            DataController.instance.data.bFailed = false;
         }
         else
         {
             CurrentDial = 1;
+            DataController.instance.data.bSucceed = false;
         }
     }
 

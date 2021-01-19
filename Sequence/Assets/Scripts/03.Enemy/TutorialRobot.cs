@@ -29,7 +29,7 @@ public class TutorialRobot : Enemy
     private GameObject canvas;
     private Camera camera;
 
-    private AlertScreenController BeCareful;
+    public AlertScreenController BeCareful;
     private DialogueManager dial;
     private EnemySpawner spawner;
 

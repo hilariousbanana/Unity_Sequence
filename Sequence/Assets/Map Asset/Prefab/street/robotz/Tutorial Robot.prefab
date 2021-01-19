@@ -191,8 +191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1dd3e1282a7a17458ce30ff339b0367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ViewAngle: 0
-  ViewDistance: 0
+  ViewAngle: 50
+  ViewDistance: 10
   TargetMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -233,6 +233,7 @@ MonoBehaviour:
   HealPackA: {fileID: 8198909352693198359, guid: 84ecf1efb046f604e8edf8818733b7fc, type: 3}
   HealPackB: {fileID: 1279140426991430450, guid: 360690a7c06559a4f927c76899139848, type: 3}
   HPBar: {fileID: 979397068186306050, guid: 22171d9b48e735f4c976fd9f40a9fec5, type: 3}
+  BeCareful: {fileID: 0}
   bAction: 0
   bWalk: 0
   bPlayerInRange: 0

@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     void GameOver()
     {
-        data.bFailed = false;
+        data.bFailed = true;
         data.UpdateVariables(data.CurrentStage);
         StartCoroutine(GameOverCoroutine());
     }

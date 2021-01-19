@@ -410,7 +410,7 @@ MonoBehaviour:
   - {fileID: 1390887919667286, guid: 1fcb5430a489c9940a1c8fac5e3f1a95, type: 3}
   - {fileID: 2836004475591695743, guid: f432554f564e69242897607d34218939, type: 3}
   RespawnPoint: {fileID: 8319762180363675068}
-  MaxInstance: 30
+  MaxInstance: 15
 --- !u!1 &8319762181160865868
 GameObject:
   m_ObjectHideFlags: 0
