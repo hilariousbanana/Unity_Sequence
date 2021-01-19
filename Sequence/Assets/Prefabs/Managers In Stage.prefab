@@ -88,11 +88,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Stages:
-  - StagePrefab: {fileID: 3971254468700373017, guid: 1cb15393180df344aa2d019d23e7b907, type: 3}
+  - StagePrefab: {fileID: 8319762180880082502, guid: d64317ea010d91a4d8e2908ac2d42543, type: 3}
     StageNum: 0
   - StagePrefab: {fileID: 3971254468700373017, guid: 1cb15393180df344aa2d019d23e7b907, type: 3}
     StageNum: 1
-  - StagePrefab: {fileID: 8319762180880082502, guid: ff42f234e7290c04e8648e3637a5fd77, type: 3}
+  - StagePrefab: {fileID: 3971254468700373017, guid: e9b3fff0599ce42448dc17a0a0da70ef, type: 3}
     StageNum: 2
   Crosshair: {fileID: 0}
 --- !u!1 &6281724815988607580

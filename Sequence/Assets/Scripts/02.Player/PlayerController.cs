@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
         originPosY = cam.transform.localPosition.y;
         applyPosY = originPosY;
         this.transform.position = respawn.position;
+        this.transform.rotation = respawn.rotation;
     }
 
     // Update is called once per frame

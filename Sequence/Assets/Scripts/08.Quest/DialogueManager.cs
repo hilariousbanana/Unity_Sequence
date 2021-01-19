@@ -65,8 +65,8 @@ public class DialogueManager : MonoBehaviour
 
         DialogueList.AddDialogue(Dialogue.DialogueType.Succeed, new string[]
         {
-            "You finally did it !",
-            "Next mission would be harder than last stage.",
+            "You finally did it ! \n Great job.",
+            "Next mission would be harder than the tutorial. \n This is actual field.",
             "Be Prepared. \n There's no time to hesitate. \n Move faster."
         }
         );
@@ -75,7 +75,7 @@ public class DialogueManager : MonoBehaviour
        {
             "You failed the mission.",
             "So we re-created the stage for you.",
-            "This will be last chance. \n Good Luck, my friend."
+            "This will be the last chance. \n Good Luck, my friend."
        }
        );
     }

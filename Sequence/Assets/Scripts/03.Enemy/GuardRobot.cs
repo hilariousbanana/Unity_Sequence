@@ -8,7 +8,7 @@ public class GuardRobot : Enemy
 {
     private EnemyData stat;
     [SerializeField]
-    private Transform[] routes;
+    private List<Transform> routes;
     private NavMeshAgent nav;
     private Transform target;
     private Transform playerTransform;
@@ -38,6 +38,7 @@ public class GuardRobot : Enemy
         collider = GetComponent<SphereCollider>();
         canvas = GameObject.Find("Canvas");
         hpBar = Instantiate(HPBar.gameObject, canvas.transform).GetComponent<RectTransform>();
+        routes = FindObjectOfType<StageInformation>().GetComponent<StageInformation>().Routes;
         hpBar.gameObject.SetActive(false);
         camera = Camera.main;
         Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);

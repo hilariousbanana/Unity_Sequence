@@ -41,7 +41,7 @@ public class NormalRobot : Enemy
     private GameObject canvas;
     private Camera camera;
 
-    STATE state = STATE.Idle;
+    public STATE state = STATE.Idle;
 
     public bool bAction;
     public bool bWalk;

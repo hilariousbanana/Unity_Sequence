@@ -34,7 +34,7 @@ public class TitleManager : MonoBehaviour
 
     public void ButtonNewGame()
     {
-        LoadingSceneManager.LoadScene(1);
+        LoadingSceneManager.LoadScene(3);
     }
 
     public void ButtonLoadGame()
