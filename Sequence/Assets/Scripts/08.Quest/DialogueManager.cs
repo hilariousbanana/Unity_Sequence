@@ -147,4 +147,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    public void SetEndDial(bool ended)
+    {
+        bDialEnd = ended;
+    }
+
 }

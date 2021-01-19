@@ -19,10 +19,12 @@ public class GameManager : MonoBehaviour
     public GameObject ResultBox;
     public GameObject GameOverPanel;
     public GameObject ClearPanel;
+    public DialogueManager dial;
 
     private void Start()
     {
         data = DataController.instance.data;
+        //dial = FindObjectOfType<DialogueManager>();
     }
 
     private void Update()
@@ -105,6 +107,7 @@ public class GameManager : MonoBehaviour
     void GameOver()
     {
         data.bFailed = true;
+        dial.SetEndDial(false);
         data.UpdateVariables(data.CurrentStage);
         StartCoroutine(GameOverCoroutine());
     }
