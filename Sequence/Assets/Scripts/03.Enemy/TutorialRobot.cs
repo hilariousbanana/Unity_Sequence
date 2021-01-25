@@ -28,6 +28,9 @@ public class TutorialRobot : Enemy
     public Slider HPBar;
     private GameObject canvas;
     private Camera camera;
+    private GameObject MinimapCanvas;
+    public GameObject MinimapIcon;
+    private Transform IconPos;
 
     public AlertScreenController BeCareful;
     private DialogueManager dial;
@@ -54,18 +57,24 @@ public class TutorialRobot : Enemy
         camera = FindObjectOfType<PlayerController>().GetComponentInChildren<Camera>();
         dial = FindObjectOfType<DialogueManager>();
         spawner = FindObjectOfType<EnemySpawner>();
+        MinimapCanvas = GameObject.Find("MinimapCanvas");
+        IconPos = Instantiate(MinimapIcon, MinimapCanvas.transform).GetComponent<RectTransform>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(dial.bDialEnd)
+        IconPos.position = this.transform.position;
+        if (dial.bDialEnd)
         {
             CheckPlayerInRange();
             EnemyState();
 
             Vector3 _hpPos = camera.WorldToScreenPoint(HPBarPos.position);
             hpBar.position = _hpPos;
+
+            //Vector3 _iconPos = camera.WorldToScreenPoint(this.transform.position);
+
             hpBar.gameObject.GetComponent<Slider>().value = (float)stat.curHp / (float)stat.maxHP;
         }
     }
@@ -251,6 +260,7 @@ public class TutorialRobot : Enemy
         DataController.instance.data.CurrentKillCount++;
         spawner.CurInstance--;
         Destroy(hpBar.gameObject, 1.5f);
+        Destroy(IconPos.gameObject, 1.5f);
         Destroy(this.gameObject, 1.5f);
     }
 

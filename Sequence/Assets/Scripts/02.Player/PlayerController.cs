@@ -89,8 +89,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 _MinimapPos = cam.WorldToScreenPoint(IconPos.position);
-        IconPos.position = _MinimapPos;
+        //Vector3 _MinimapPos = cam.WorldToScreenPoint(this.transform.position);
+        IconPos.position = this.transform.position;
 
         if (dial.bDialEnd)
         {

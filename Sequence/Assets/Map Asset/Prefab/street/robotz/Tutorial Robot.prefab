@@ -233,6 +233,8 @@ MonoBehaviour:
   HealPackA: {fileID: 8198909352693198359, guid: 84ecf1efb046f604e8edf8818733b7fc, type: 3}
   HealPackB: {fileID: 1279140426991430450, guid: 360690a7c06559a4f927c76899139848, type: 3}
   HPBar: {fileID: 979397068186306050, guid: 22171d9b48e735f4c976fd9f40a9fec5, type: 3}
+  MinimapCanvas: {fileID: 0}
+  MinimapIcon: {fileID: 8819986407183206255, guid: 292812cb99b37d047a678021429ab2b8, type: 3}
   BeCareful: {fileID: 0}
   bAction: 0
   bWalk: 0
