@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Camera cam;
     private Transform respawn;
-    public GameObject RespawnBar;
 
     public enum STATE
     {
@@ -65,6 +64,12 @@ public class PlayerController : MonoBehaviour
     private float curCamRotX = 0f;
     #endregion
 
+    #region UI(Respawn Bar, Minimap Icon)
+    private Transform IconPos;
+    public GameObject MinimapIcon;
+    public GameObject RespawnBar;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -76,6 +81,7 @@ public class PlayerController : MonoBehaviour
         applySpeed = walkSpeed;
         originPosY = cam.transform.localPosition.y;
         applyPosY = originPosY;
+        IconPos = MinimapIcon.GetComponent<RectTransform>();
         this.transform.position = respawn.position;
         this.transform.rotation = respawn.rotation;
     }
@@ -83,6 +89,9 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Vector3 _MinimapPos = cam.WorldToScreenPoint(IconPos.position);
+        IconPos.position = _MinimapPos;
+
         if (dial.bDialEnd)
         {
             IsOnGround();
