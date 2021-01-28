@@ -191,6 +191,7 @@ public class GuardRobot : Enemy
         nav.speed = 0;
         Explosion.Play();
 
+        Destroy(hpBar.gameObject, 1.5f);
         Destroy(this.gameObject, 1.5f);
     }
 

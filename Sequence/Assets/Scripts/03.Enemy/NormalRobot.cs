@@ -35,6 +35,10 @@ public class NormalRobot : Enemy
     private AudioSource audio;
     private Animator anim;
 
+    private GameObject MinimapCanvas;
+    public GameObject MinimapIcon;
+    private Transform IconPos;
+
     [SerializeField]
     private Transform HeadPos;
 
@@ -67,12 +71,15 @@ public class NormalRobot : Enemy
         hpBar.gameObject.SetActive(false);
         camera = Camera.main;
         spawner = FindObjectOfType<EnemySpawner>();
+        MinimapCanvas = GameObject.Find("MinimapCanvas");
+        IconPos = Instantiate(MinimapIcon, MinimapCanvas.transform).GetComponent<RectTransform>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(dial.bDialEnd)
+        IconPos.position = this.transform.position;
+        if (dial.bDialEnd)
         {
             CheckPlayerInRange();
             EnemyState();
