@@ -1,0 +1,75 @@
+[Sequence - Blood Fair]
+
+0.Game Logic
+Stage - 1, 2, 3, Final 총 네단계 구성
+
+>Stage 1(tutorial)(리스폰 횟수 무제한)
+잡몹 10마리 섬멸 후 클리어.
+Quest - 튜토리얼 로봇 10회 섬멸
+
+>Stage 2(리스폰 횟수 5회, 그 이후부터는 스테이지 초기화)
+잡몹 10마리 섬멸 후 다음 스테이지 이동 아이템 획득(몬스터 드랍) 후 클리어
+Quest - 일반로봇 10회 처리/리스폰 횟수 5회 미만/이동아이템 획득
+
+>Stage 3(리스폰 횟수 3회, 그 이후부터는 스테이지 초기화)
+몬스터 처리 횟수 제한 없음. 몬스터들이 드랍하는 회복 아이템
+혹은 맵에 숨겨져있는 회복아이템 등을 이용하여 생존, 드랍하는 이동 아이템을 통해
+다음 스테이지 이동.(경비 로봇의 시선을 피할 것 - 범위 내 걸릴 시 스테이지 리셋.)
+Quest - 경비로봇 시선 3회 미만/힐 포션 3회 이상 획득/리스폰 횟수 3회 미만/이동아이템 획득
+
+>Final Stage
+잡몹을 모두 처리하고 보스 로봇 처리시 게임 클리어.
+스테이지 시작 시각부터 종료 시작까지 타이머로 재서 기록 리스트에 올림.
+Quest - 맵 내 잡몹 처리/보스 처리
+
+1.Database
+Data - GameData, PlayerStat, WeaponState, EnemyStat 
+
+>GameData: Stage관리(Quest현황)
+>>Variables: 
+>>>List<Quest> Quests:
+   Quest는 [Serializable]로(RespawnCount, Kills, PotionCount, Key)
+   한 후 리스트 만든 후에 총 네개 스테이지 별 퀘스트 추가.
+>>>List<int> ClearRecords:
+   파이널 스테이지에서 사용 될 처리 기록 리스트
+
+>PlayerStat: 플레이어 스텟.. 이랄 것도 없는게 그냥 Hp만 있으면 될 듯.
+
+>WeaponState: 무기별 상태(총알 개수, Granade 개수, 총의 종류)
+>>WeaponTypes(스나이퍼, 권총, Granade, 그 외 두개)
+>>>Sniper: 줌인, 줌아웃 기능. 총알 개수: 재장전 시간: 데미지:
+>>>Gun: 사거리 짧음. 총알 개수: 재장전 시간: 데미지:
+>>>Granade: 스테이지 별 사용 가능 횟수: 재장전 불가능. 데미지: 사정거리 안에 있는지 체크 후 모두 데미지.
+>>>ShotGun: 총알 개수: 재장전 시간: 데미지:
+>>>Rifle: 총알 개수: 재장전 시간: 데미지:
+
+>EnemyStat: 몹 스탯. 역시 Hp만 필요.
+
+2.Player
+>StateMachine: Idle, Walk, Run, Reload, Shoot, Damaged, Died
+>>Idle: 가만히 서 있을 때.
+>>Walk: 걷는다. 걸을 때 마다 카메라 흔들림.
+>>Reload: 재장전. 총별 정해진 시간동안 Shoot의 상태로 갈 수 없다. 현재 들고있는 총의 총알 개수 Max로
+>>Shoot: 쏜다. 쏠 때 마다 카메라 흔들림. 총알 개수 감소.
+>>Damaged: 맞음. 피UI. hp구간 별 피UI 진한 정도 변화. 일정 구간에서는 뛰기 불가능.
+>>Died: 죽음. 리스폰 가능 횟수에 따라 스테이지 데이터를 건들지 말지를 결정함. 리스폰 시간 후 Idle.
+
+3.Enemy
+>RobotType: Tutorial, Normal, Machine, Guard, Boss
+>>Tutorial: 더미. 닿을 경우만 플레이어 체력 깎임.
+  Hp: 30 Damage: 10 ItemDrop: 100%
+>>Normal: (범위 내 포착 시)5초에 한번 플레이어 방향 탐지 후 공격. 무작위 이동. 
+  Hp: 70 Damage: 20 CoolDown: 5 Speed: ItemDrop: 80%(HealPack:50% PassKey:50%)
+>>Machine: 
+  Hp: 130 Damage: 25 CoolDown: 2.5 Speed: ItemDrop: 50%(HealPack:70% PassKey:30%)
+>>Guard: 탐지로봇. 무작위로 돌아다니며 (Light)좁은 범위 내 플레이어 포착 시 횟수 삭감.
+  더 큰 범위 내(플레이어 탐지)에 있을 시 플레이어 쫓아감. 
+  Hp: 500 Damage: 10 Speed: ItemDrop: 0%
+>>Boss: 
+  Hp: 5000 Damage: 50
+
+4.UI
+>Title, Main, Option, Weapon, Bullet, Hp(Player), Hp(Enemy), Quest, RecordList, Blood 
+
+5.Item
+>ItemTypes: HealPack(+30, +50), Stage Pass Key(1 per stage)
